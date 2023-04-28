@@ -1,28 +1,18 @@
 
 <html>
   <head>
-    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js" integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs" crossorigin="anonymous"></script>
-    <script>
-      const socket = io('http://localhost:4005');
-      socket.on('connect', function() {
-        console.log('Connected');
-
-        socket.emit('events', { test: 'test' });
-        socket.emit('identity', 0, response =>
-          console.log('Identity:', response),
-        );
-      });
-      socket.on('events', function(data) {
-        console.log('event', data);
-      });
-      socket.on('exception', function(data) {
-        console.log('event', data);
-      });
-      socket.on('disconnect', function() {
-        console.log('Disconnected');
-      });
-    </script>
   </head>
+  <body>
+    <input placeholder="아이디를 입력하세요" id="name"></input>
+    <button onclick="join()">Join</button>
+  </body>
+  <script>
+    function join() {
+      const name = document.getElementById("name").value;
 
-  <body></body>
+      const url = "http://localhost:4000/lobby.html?name="+name;
+
+      window.location.href = url;
+    }
+  </script>
 </html>

@@ -5,6 +5,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { EventsModule } from './events/events.module';
 import { join } from 'path';
 
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({

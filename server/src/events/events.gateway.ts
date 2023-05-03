@@ -9,7 +9,7 @@ import {
   } from '@nestjs/websockets';
 
 import { Socket, Server } from 'socket.io';
-import { User } from './dto/events.user.dto';
+import { Room } from './dto/events.room.dto';
   
   @WebSocketGateway(4005, {
     cors: {
@@ -21,10 +21,12 @@ import { User } from './dto/events.user.dto';
     @WebSocketServer()
     server: Server;
     
-    public users: Map<string, User> = new Map();
-    public rooms = [];
+    public users: Map<string, string> = new Map();
+    public rooms: Room[] = [];
 
     handleConnection(Client: Socket) {
+      Client.rooms.clear();
+      Client.join('lobby');
       console.log(Client.id+" connected!");
             
     }
@@ -34,28 +36,25 @@ import { User } from './dto/events.user.dto';
     }
     @SubscribeMessage('information')
     information(@MessageBody() name: string , @ConnectedSocket() client: Socket) {
-      const user = new User;
-      user.name = name;
-      this.users.set(client.id, user);
+      this.users.set(client.id, name);
       console.log("client id : "+client.id);
-      console.log("client name : "+user.name);
+      console.log("client name : "+name);
     }
 
     @SubscribeMessage('newMessage')
     message(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-      const user: User = this.users.get(client.id);
+      let room='';
+      const user = this.users.get(client.id);
       const message = {
-        name : user.name,
+        name : user,
         text : data,
       }
-      const roomName = user.roomName;
-      console.log("roomName : "+roomName);
-      if(roomName===undefined){
-        this.server.emit('onMessage', message);
-      }else{
-        this.server.to(roomName).emit('onMessage', message);
+      for (const key of client.rooms.keys()) {
+        room = key;
       }
-      console.log(message.name+" : "+message.text);
+      this.server.to(room).emit('onMessage', message);
+      console.log(message.name+" : "+message.text);      
+      console.log("room : "+room);
     }
 
     @SubscribeMessage('join')
@@ -66,24 +65,39 @@ import { User } from './dto/events.user.dto';
     }
 
     @SubscribeMessage('leave')
-    leave(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-      console.log("leave_"+client.rooms);
-      client.leave(data);
-      console.log("leave_"+client.id);
+    leave(@ConnectedSocket() client: Socket) {
+      let deleteIndex = 0 ;
+      for (let index = 0; index < this.rooms.length; index++) {
+        if(this.rooms[index].name===client.id){
+          deleteIndex = index;
+        }
+      }
+      this.rooms.splice(deleteIndex, 1);
+      client.rooms.clear();
+      client.join('lobby');
     }
 
     @SubscribeMessage('check')
     check(@ConnectedSocket() client: Socket) {
       console.log(this.users.get(client.id));
       console.log(this.rooms.length);
+      console.log("client room size : "+client.rooms.size);
+      for (const key of client.rooms.keys()) {
+        console.log(key);
+      }
     }
 
     @SubscribeMessage('create')
     create(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-      const user = this.users.get(client.id);      
-      user.title = data;
-      user.roomName = client.id;
-      client.join(user.roomName);
-      this.server.emit('created', user);
+      client.leave('lobby');
+      const room = {
+        name : client.id,
+        title : data,
+        guest : ''
+        }
+        this.rooms.push(room);
+      console.log(room);
+      client.join(room.name);
+      this.server.emit('created', room);
     }
   }

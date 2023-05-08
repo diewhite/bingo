@@ -1,5 +1,5 @@
 export class Room {
-    name: string;
     title: string;
-    guest: string;
-}
+    player1 : string;
+    player2 : string;    
+};

@@ -10,7 +10,10 @@ import {
 
 import { Socket, Server } from 'socket.io';
 import { Room } from './dto/events.room.dto';
-  
+import { BingoBoard } from './dto/events.bingoBoard';
+import { EventsService } from './events.service';
+import { Message } from './dto/events.message';
+
   @WebSocketGateway(4005, {
     cors: {
       origin: '*',
@@ -18,6 +21,8 @@ import { Room } from './dto/events.room.dto';
   })
   
   export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect{
+    constructor(private readonly eventsService: EventsService){}
+
     @WebSocketServer()
     server: Server;
     
@@ -40,15 +45,14 @@ import { Room } from './dto/events.room.dto';
       console.log("client id : "+client.id);
       console.log("client name : "+name);
     }
-
+    
     @SubscribeMessage('newMessage')
     message(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-      let room='';
-      const user = this.users.get(client.id);
-      const message = {
-        name : user,
-        text : data,
-      }
+      let room:string ='';
+      const user:string = this.users.get(client.id);
+      const message: Message = new Message();
+      message.name = user;
+      message.text = data;
       for (const key of client.rooms.keys()) {
         room = key;
       }
@@ -66,9 +70,10 @@ import { Room } from './dto/events.room.dto';
 
     @SubscribeMessage('leave')
     leave(@ConnectedSocket() client: Socket) {
-      let deleteIndex = 0 ;
-      for (let index = 0; index < this.rooms.length; index++) {
-        if(this.rooms[index].name===client.id){
+      const roomsSize = this.rooms.length;
+      let deleteIndex:number = 0 ;
+      for (let index = 0; index < roomsSize; index++) {
+        if(this.rooms[index].title===client.id){
           deleteIndex = index;
         }
       }
@@ -77,27 +82,31 @@ import { Room } from './dto/events.room.dto';
       client.join('lobby');
     }
 
-    @SubscribeMessage('check')
-    check(@ConnectedSocket() client: Socket) {
-      console.log(this.users.get(client.id));
-      console.log(this.rooms.length);
-      console.log("client room size : "+client.rooms.size);
-      for (const key of client.rooms.keys()) {
-        console.log(key);
-      }
-    }
+    // @SubscribeMessage('check')
+    // check(@ConnectedSocket() client: Socket) {
+    //   console.log(this.users.get(client.id));
+    //   console.log(this.rooms.length);
+    //   console.log("client room size : "+client.rooms.size);
+    //   for (const key of client.rooms.keys()) {
+    //     console.log(key);
+    //   }
+    // }
 
     @SubscribeMessage('create')
     create(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
       client.leave('lobby');
-      const room = {
-        name : client.id,
-        title : data,
-        guest : ''
-        }
-        this.rooms.push(room);
+      const room:Room = new Room();
+      room.title = data;
+      room.player1 = this.users.get(client.id);
+      this.rooms.push(room);
       console.log(room);
-      client.join(room.name);
+      client.join(room.title);
       this.server.emit('created', room);
+    }
+
+    @SubscribeMessage('check')
+    check(@MessageBody() data: BingoBoard, @ConnectedSocket() client: Socket): BingoBoard {
+      const userData:BingoBoard = data;
+      return this.eventsService.checklogic(userData);
     }
   }

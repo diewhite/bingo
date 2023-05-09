@@ -28,7 +28,8 @@
     "@nestjs/swagger": "^6.3.0",
     "@nestjs/websockets": "^9.4.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "shortid": "^2.2.16"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

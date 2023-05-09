@@ -19,7 +19,7 @@ const Container = styled.div`
 
   border-radius: 15px;
   div {
-    background-color: #d9d9d9;
+    /* background-color: #d9d9d9; */
     height: 77px;
   }
   div:nth-child(1) {
@@ -27,22 +27,22 @@ const Container = styled.div`
 
     justify-content: center;
     align-items: center;
-    width: 77px;
-    height: 77px;
+    width: 40px;
+    height: 40px;
     font-size: 20px;
     font-weight: 500;
     border-radius: 77px;
+    border: solid 1px black;
   }
   div:nth-child(2) {
     display: flex;
     border-radius: 10px;
     padding-left: 10px;
     align-items: center;
-    width: 200px;
+    width: calc(100% - 137px - 20px);
     height: 77px;
     font-weight: 700;
     font-size: 20px;
-    background: #d9d9d9;
   }
   div:nth-child(3) {
     display: flex;
@@ -54,9 +54,9 @@ const Container = styled.div`
   }
 `;
 
-const RoomBox = () => {
+const RoomBox = ({ setIsPlayGame }) => {
   return (
-    <Container>
+    <Container onClick={() => setIsPlayGame(true)}>
       <div>1</div>
       <div>빙고 같이 할 사람 드루와</div>
       <div>1/2</div>

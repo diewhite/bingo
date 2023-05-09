@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "styled-components";
-import RoomBox from "../components/waitingroom/RoomBox.js";
+import RoomBox from "../components/waitingroom/RoomBox";
 import UserInfo from "../components/waitingroom/UserInfo.js";
+import CreateRoom from "../components/waitingroom/CreateRoom";
+import ChangeName from "../components/waitingroom/ChangeName";
+import ChatBox from "../components/waitingroom/ChatBox";
+import BingoBox from "../components/playgame/BingoBox";
 
 const Container = styled.div`
   display: flex;
@@ -11,6 +15,8 @@ const Container = styled.div`
   height: 100vh;
   background-color: #3e7aeb;
   padding: 50px;
+  /* max-width: 1440px; */
+  min-width: 800px;
 `;
 
 const RoomBoxWrap = styled.div`
@@ -41,22 +47,41 @@ const Button = styled.button`
 `;
 
 const PlayGame = () => {
+  const [isCreate, setIsCreate] = useState(false);
+  const [isChangeName, setIsChangeName] = useState(false);
+  const [isPlayGame, setIsPlayGame] = useState(false);
+
   return (
     <Container>
-      <UserInfo></UserInfo>
-      <RoomBoxWrap>
-        <RoomBox />
-        <RoomBox />
-        <RoomBox />
-        <RoomBox />
-        <RoomBox />
-        <RoomBox />
-        <RoomBox />
-      </RoomBoxWrap>
-      <ButtonWrap>
-        <Button>방 만들기</Button>
-        <Button>닉네임 변경</Button>
-      </ButtonWrap>
+      {!isPlayGame ? (
+        <>
+          <UserInfo></UserInfo>
+          <RoomBoxWrap>
+            <RoomBox setIsPlayGame={setIsPlayGame} />
+            <RoomBox setIsPlayGame={setIsPlayGame} />
+            <RoomBox setIsPlayGame={setIsPlayGame} />
+            <RoomBox setIsPlayGame={setIsPlayGame} />
+            <RoomBox setIsPlayGame={setIsPlayGame} />
+          </RoomBoxWrap>
+          <ChatBox></ChatBox>
+          <ButtonWrap>
+            <Button onClick={() => setIsCreate(!isCreate)}>방 만들기</Button>
+            <Button onClick={() => setIsChangeName(!isChangeName)}>
+              닉네임 변경
+            </Button>
+          </ButtonWrap>
+          {isCreate ? <CreateRoom isOpen={setIsCreate}></CreateRoom> : <></>}
+          {isChangeName ? (
+            <ChangeName isOpen={setIsChangeName}></ChangeName>
+          ) : (
+            <></>
+          )}
+        </>
+      ) : (
+        <>
+          <BingoBox></BingoBox>
+        </>
+      )}
     </Container>
   );
 };

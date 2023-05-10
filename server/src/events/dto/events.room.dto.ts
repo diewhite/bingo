@@ -1,4 +1,4 @@
-import { ShortId } from 'shortid';
+import * as shortid from 'shortid';
 
 export class Room {
     title: string;
@@ -7,6 +7,9 @@ export class Room {
     player2 : string;
 
     constructor() {
-        this.number = ShortId.generate();
+        this.title = '';
+        this.number = shortid.generate();
+        this.player1 = '';
+        this.player2 = '';
     }
 };

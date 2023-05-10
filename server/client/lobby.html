@@ -17,6 +17,7 @@
     <button onclick="create()">Create</button>
     <button onclick="check()">Check</button>
     <button onclick="leave()">leave</button>
+    <button onclick="createBingo()">Create Bingo</button>
   </body>
   <script>
     const queryString = window.location.search;
@@ -44,15 +45,16 @@
       console.log('Disconnected');
     });
     socket.on('created', function(data) {
-      const div = document.createElement("div");
-      div.append(data.title);
-      room.append(div);
+      // const div = document.createElement("div");
+      // div.append(data.title);
+      // room.append(div);
+      console.log(data);
     });
     socket.on('onMessage', function(data) {
       const div = document.createElement("div");
       div.append(data.name+" : "+data.text);
       chat.append(div);
-    })
+    })    
   </script>
   <script>
     function newMessage(){
@@ -77,7 +79,11 @@
     }
 
     function join(){
-      socket.join('join')
+      socket.join('join');
+    }
+
+    function createBingo(){
+      socket.emit('createBingo');
     }
   </script>
 

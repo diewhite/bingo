@@ -1,8 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { RESULT, BingoBoard } from './dto/events.bingoBoard';
+import { RESULT, BingoBoard, Cell } from './dto/events.bingoBoard';
 
 @Injectable()
 export class EventsService {
+    createBoard(): BingoBoard{
+        const bingoBoard:BingoBoard = new BingoBoard();
+        const numbers = Array.from({ length: 25 }, (_, index) => index + 1);
+        const shuffledNumbers = shuffleArray(numbers);
+        
+        for (let i = 0; i < 5; i++) {
+            const cell:Cell[] = [];
+            for (let j = 0; j < 5; j++) {
+                const index:number = (i*5)+j;
+                cell.push({number : shuffledNumbers[index], isSelected : false})
+            }
+            bingoBoard.cell.push(cell);
+        }
+        
+        return bingoBoard;
+    }
+
     checklogic(data:BingoBoard):BingoBoard{
         const userData: BingoBoard = data;
         const columSize: number = userData.cell.length;
@@ -54,3 +71,11 @@ export class EventsService {
         return userData;
     }
 }
+
+function shuffleArray(array: number[]): number[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }

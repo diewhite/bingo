@@ -73,14 +73,18 @@ import { ShortId } from 'shortid';
     @SubscribeMessage('create')
     create(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
       const room: Room = new Room();
-      
+
       room.title = data;
       room.player1 = this.users.get(client.id);
       client.leave('lobby');
       this.rooms.set(room.number, room);
       console.log(room);
       client.join(room.number);
-      this.server.emit('created', room);
+            
+      const bingoBoard: BingoBoard = this.eventsService.createBoard();
+      const res = { room, bingoBoard };
+
+      this.server.to(client.id).emit('created', res)
     }
 
     //생성된 방에 조인 처리
@@ -96,7 +100,7 @@ import { ShortId } from 'shortid';
 
       this.rooms.set(room.number,room);
       client.join(data);
-      this.server.emit('joined', room);
+      this.server.to(client.id).emit('joined', room);
     }
 
     //방에서 나가기 처리
@@ -130,5 +134,12 @@ import { ShortId } from 'shortid';
     check(@MessageBody() data: BingoBoard, @ConnectedSocket() client: Socket): BingoBoard {
       const userData:BingoBoard = data;
       return this.eventsService.checklogic(userData);
+    }
+
+    //bingoboard 생성 테스트
+    @SubscribeMessage('createBingo')
+    createBingo(@ConnectedSocket() client: Socket) {
+      const bingoBoard:BingoBoard = this.eventsService.createBoard();
+      console.log(bingoBoard);
     }
   }

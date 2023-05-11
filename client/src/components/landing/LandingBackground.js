@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import CreateNameModal from "./CreateNameModal";
 
 const Container = styled.div`
   position: absolute;
@@ -71,20 +72,29 @@ const TitleBox = styled.div`
 `;
 
 const LandingBackground = () => {
+  const [isStart, setIsStart] = useState(false);
   const navigate = useNavigate();
   const handleClickToGame = () => {
     navigate("/playgame");
+    setIsStart(false);
   };
+  console.log(isStart);
   return (
     <>
       <Container>
         <Background></Background>
         <TitleBox>
           <Title>B I N G O</Title>
-          <Button onClick={handleClickToGame}>
-            <a>S T A R T!</a>
-          </Button>
+          <Button onClick={() => setIsStart(true)}>S T A R T!</Button>
         </TitleBox>
+        {isStart ? (
+          <CreateNameModal
+            handleClickToGame={handleClickToGame}
+            setIsOpen={setIsStart}
+          ></CreateNameModal>
+        ) : (
+          <></>
+        )}
       </Container>
     </>
   );

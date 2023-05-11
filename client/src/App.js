@@ -1,11 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+// import styled from 'styled-components';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Landing from "./pages/Landing";
+import PlayGame from "./pages/PlayGame";
 
 function App() {
   return (
-    <div className="App">
-Bingo Game!
-    </div>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="playgame" element={<PlayGame />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

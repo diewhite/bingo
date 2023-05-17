@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "styled-components";
 
 const Container = styled.div`
@@ -52,7 +52,8 @@ const Cancel = styled.span`
   font-size: 25px;
 `;
 
-const CreateRoom = ({ isOpen }) => {
+const CreateRoom = ({ isOpen, createRoom }) => {
+  const [isTitle, setIsTitle] = useState("");
   return (
     <Container>
       <Box>
@@ -60,8 +61,11 @@ const CreateRoom = ({ isOpen }) => {
           <span>방 만들기</span>
         </div>
         <div>
-          <input placeholder="방제목을 입력하세요."></input>
-          <button>방만들기</button>
+          <input
+            onChange={(e) => setIsTitle(e.target.value)}
+            placeholder="방제목을 입력하세요."
+          ></input>
+          <button onClick={() => createRoom(isTitle)}>방만들기</button>
         </div>
         <Cancel onClick={() => isOpen(false)}>X</Cancel>
       </Box>

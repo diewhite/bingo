@@ -7,6 +7,7 @@ import ChangeName from "../components/waitingroom/ChangeName";
 import ChatBox from "../components/waitingroom/ChatBox";
 import BingoBox from "../components/playgame/BingoBox";
 import { io } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,94 +43,61 @@ const Button = styled.button`
   font-size: 30px;
 `;
 
-const PlayGame = () => {
+const PlayGame = ({ setIsName, isName }) => {
   const socket = io("http://localhost:4005/");
   // console.log(socket, "socket");
   // console.log(socket());
   const [isCreate, setIsCreate] = useState(false);
   const [isChangeName, setIsChangeName] = useState(false);
   const [isPlayGame, setIsPlayGame] = useState(false);
+  const [isChatting, setIsChatting] = useState("");
+  const [isWatingRoomChat, setIsWatingRoomChat] = useState([]);
+  // console.log(isName, "isName");
+  socket.on("connect", function () {
+    console.log("Connected");
+    socket.emit("information", isName);
+    socket.emit("events", { isName: "test" });
+    socket.emit("identity", 0, (response) =>
+      console.log("Identity:", response)
+    );
+  });
+  // useEffect(() => {
+  //   socket.on("connect", function () {
+  //     console.log("Connected");
+  //     socket.emit("information", isName);
+  //     socket.emit("events", { isName: "test" });
+  //     socket.emit("identity", 0, (response) =>
+  //       console.log("Identity:", response)
+  //     );
+  //   });
+  //   return () => {};
+  // }, []);
+  // console.log(socket, "socket");
+  const newMessage = (text) => {
+    socket.emit("newMessage", text);
+  };
 
   useEffect(() => {
-    socket.on("connect", function () {
-      console.log("Connected");
-      socket.emit("information", "name");
-      socket.emit("events", { test: "test" });
-      socket.emit("identity", 0, (response) =>
-        console.log("Identity:", response)
-      );
-    });
-    socket.on("events", function (data) {
-      console.log("event", data);
-    });
-    socket.on("exception", function (data) {
-      console.log("event", data);
-    });
-    socket.on("disconnect", function () {
-      console.log("Disconnected");
-    });
-    socket.on("created", function (data) {
-      // const div = document.createElement("div");
-      // div.append(data.title);
-      // room.append(div);
-      console.log(data);
-    });
     socket.on("onMessage", function (data) {
-      const div = document.createElement("div");
-      div.append(data.name + " : " + data.text);
+      // console.log(data, "data");
+      setIsWatingRoomChat([...isWatingRoomChat, `${data.name}:${data.text}`]);
     });
+    console.log(isWatingRoomChat, "isWatingRoom");
+  }, [newMessage]);
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isName.length === 0) {
+      navigate("/");
+    }
   }, []);
-  console.log(socket, "socket");
-
-  /*
-  socket.on("connect", function () {
-      console.log("Connected");
-      socket.emit("information", name);
-      socket.emit("events", { test: "test" });
-      socket.emit("identity", 0, (response) =>
-        console.log("Identity:", response)
-      );
-    });
-    socket.on("events", function (data) {
-      console.log("event", data);
-    });
-    socket.on("exception", function (data) {
-      console.log("event", data);
-    });
-    socket.on("disconnect", function () {
-      console.log("Disconnected");
-    });
-    socket.on("created", function (data) {
-      // const div = document.createElement("div");
-      // div.append(data.title);
-      // room.append(div);
-      console.log(data);
-    });
-    socket.on("onMessage", function (data) {
-      const div = document.createElement("div");
-      div.append(data.name + " : " + data.text);
-      chat.append(div);
-    });
-  */
-
-  function newMessage() {
-    socket.emit("newMessage", "아아테스트1");
-  }
-  function newMessage1() {
-    socket.emit("newMessage", "아아테스트2");
-  }
-  console.log(
-    socket.on("onMessage", function (data) {
-      console.log(data, "data");
-    })
-  );
   return (
     <Container>
-      <button onClick={() => newMessage()}>1</button>
-      <button onClick={() => newMessage1()}>2</button>
+      {/* <button onClick={() => newMessage()}>1</button>
+      <button onClick={() => newMessage1()}>2</button> */}
       {!isPlayGame ? (
         <>
-          <UserInfo></UserInfo>
+          <UserInfo isName={isName}></UserInfo>
           <RoomBoxWrap>
             <RoomBox setIsPlayGame={setIsPlayGame} />
             <RoomBox setIsPlayGame={setIsPlayGame} />
@@ -137,7 +105,12 @@ const PlayGame = () => {
             <RoomBox setIsPlayGame={setIsPlayGame} />
             <RoomBox setIsPlayGame={setIsPlayGame} />
           </RoomBoxWrap>
-          <ChatBox></ChatBox>
+          <ChatBox
+            isChatting={isChatting}
+            setIsChatting={setIsChatting}
+            newMessage={newMessage}
+            isWatingRoomChat={isWatingRoomChat}
+          ></ChatBox>
           <ButtonWrap>
             <Button onClick={() => setIsCreate(!isCreate)}>방 만들기</Button>
             <Button onClick={() => setIsChangeName(!isChangeName)}>

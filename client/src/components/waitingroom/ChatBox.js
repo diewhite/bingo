@@ -30,16 +30,27 @@ const Container = styled.div`
   }
 `;
 
-const ChatBox = () => {
+const ChatBox = ({
+  isChatting,
+  setIsChatting,
+  newMessage,
+  isWatingRoomChat,
+}) => {
   return (
     <Container>
       <div>
-        <span>장솬: 아아아</span>
-        <span>규민: 어오오오오</span>
+        {isWatingRoomChat.map((el, index) => {
+          return <span index={index}>{el}</span>;
+        })}
       </div>
       <div>
-        <input placeholder="채팅을 입력하세요"></input>
-        <button>보내기</button>
+        <input
+          onChange={(e) => {
+            setIsChatting(e.target.value);
+          }}
+          placeholder="채팅을 입력하세요"
+        ></input>
+        <button onClick={() => newMessage(isChatting)}>보내기</button>
       </div>
     </Container>
   );

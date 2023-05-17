@@ -53,9 +53,7 @@ const Cancel = styled.span`
   font-size: 25px;
 `;
 
-const CreateNameModal = ({ setIsOpen, handleClickToGame }) => {
-  const [isName, setIsName] = useState("");
-  console.log(isName, "???");
+const CreateNameModal = ({ setIsName, setIsOpen, handleClickToGame }) => {
   return (
     <Container>
       <Box>

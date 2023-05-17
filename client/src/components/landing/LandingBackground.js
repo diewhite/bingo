@@ -71,14 +71,14 @@ const TitleBox = styled.div`
   gap: 50px;
 `;
 
-const LandingBackground = () => {
+const LandingBackground = ({ setIsName, isName }) => {
   const [isStart, setIsStart] = useState(false);
   const navigate = useNavigate();
   const handleClickToGame = () => {
     navigate("/playgame");
     setIsStart(false);
   };
-  console.log(isStart);
+
   return (
     <>
       <Container>
@@ -91,6 +91,7 @@ const LandingBackground = () => {
           <CreateNameModal
             handleClickToGame={handleClickToGame}
             setIsOpen={setIsStart}
+            setIsName={setIsName}
           ></CreateNameModal>
         ) : (
           <></>

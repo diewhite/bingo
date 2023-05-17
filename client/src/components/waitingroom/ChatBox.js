@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { styled } from "styled-components";
 
 const Container = styled.div`
@@ -17,6 +17,8 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 5px;
+    height: 270px;
+    overflow-y: scroll;
   }
   div:nth-child(2) {
     display: flex;
@@ -36,9 +38,15 @@ const ChatBox = ({
   newMessage,
   isWatingRoomChat,
 }) => {
+  const scrollRef = useRef();
+
+  useEffect(() => {
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [isWatingRoomChat, newMessage]);
+
   return (
     <Container>
-      <div>
+      <div ref={scrollRef}>
         {isWatingRoomChat.map((el, index) => {
           return <span index={index}>{el}</span>;
         })}

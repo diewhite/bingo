@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { styled } from "styled-components";
 import RoomBox from "../components/waitingroom/RoomBox";
 import UserInfo from "../components/waitingroom/UserInfo.js";
@@ -8,6 +8,7 @@ import ChatBox from "../components/waitingroom/ChatBox";
 import BingoBox from "../components/playgame/BingoBox";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -44,44 +45,39 @@ const Button = styled.button`
 `;
 
 const PlayGame = ({ setIsName, isName }) => {
-  const socket = io("http://localhost:4005/");
-  // console.log(socket, "socket");
-  // console.log(socket());
+  let socket = useRef(null);
+
   const [isCreate, setIsCreate] = useState(false);
   const [isChangeName, setIsChangeName] = useState(false);
   const [isPlayGame, setIsPlayGame] = useState(false);
   const [isChatting, setIsChatting] = useState("");
   const [isWatingRoomChat, setIsWatingRoomChat] = useState([]);
-  // console.log(isName, "isName");
-  socket.on("connect", function () {
-    console.log("Connected");
-    socket.emit("information", isName);
-    socket.emit("events", { isName: "test" });
-    socket.emit("identity", 0, (response) =>
-      console.log("Identity:", response)
-    );
+
+  useEffect(() => {
+    if (!socket.current) {
+      socket.current = io("http://localhost:4005/");
+
+      socket.current.on("connect", function () {
+        console.log("Connected");
+        socket.current.emit("information", isName);
+        socket.current.emit("events", { isName: "test" });
+        socket.current.emit("identity", 0, (response) =>
+          console.log("Identity:", response)
+        );
+      });
+    }
   });
-  // useEffect(() => {
-  //   socket.on("connect", function () {
-  //     console.log("Connected");
-  //     socket.emit("information", isName);
-  //     socket.emit("events", { isName: "test" });
-  //     socket.emit("identity", 0, (response) =>
-  //       console.log("Identity:", response)
-  //     );
-  //   });
-  //   return () => {};
-  // }, []);
-  // console.log(socket, "socket");
+
   const newMessage = (text) => {
-    socket.emit("newMessage", text);
+    socket.current.emit("newMessage", text);
+    text = "";
   };
 
   useEffect(() => {
-    socket.on("onMessage", function (data) {
-      // console.log(data, "data");
+    socket.current.on("onMessage", function (data) {
       setIsWatingRoomChat([...isWatingRoomChat, `${data.name}:${data.text}`]);
     });
+
     console.log(isWatingRoomChat, "isWatingRoom");
   }, [newMessage]);
 
@@ -93,8 +89,6 @@ const PlayGame = ({ setIsName, isName }) => {
   }, []);
   return (
     <Container>
-      {/* <button onClick={() => newMessage()}>1</button>
-      <button onClick={() => newMessage1()}>2</button> */}
       {!isPlayGame ? (
         <>
           <UserInfo isName={isName}></UserInfo>

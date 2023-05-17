@@ -1,10 +1,13 @@
 import React from "react";
 import LandingBackground from "../components/landing/LandingBackground";
 
-const Landing = () => {
+const Landing = ({ setIsName, isName }) => {
   return (
     <>
-      <LandingBackground></LandingBackground>
+      <LandingBackground
+        setIsName={setIsName}
+        isName={isName}
+      ></LandingBackground>
     </>
   );
 };

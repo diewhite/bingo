@@ -10,8 +10,8 @@ const Container = styled.div`
   padding-left: 20px;
 `;
 
-const UserInfo = () => {
-  return <Container>장수완님 bingo 게임에 오신 것을 환영 합니다.</Container>;
+const UserInfo = ({ isName }) => {
+  return <Container>{isName}님 bingo 게임에 오신 것을 환영 합니다.</Container>;
 };
 
 export default UserInfo;

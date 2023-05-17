@@ -16,7 +16,6 @@ const BingoNumberBox = ({ children }) => {
   const boxColorHandler = () => {
     setIsColor({ backgroundColor: "gray" });
   };
-  console.log(isColor, "sss");
   return (
     <Wrap onClick={() => setIsColor(false)} backColor={isColor}>
       {children}

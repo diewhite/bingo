@@ -3,14 +3,23 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import PlayGame from "./pages/PlayGame";
+import { useState } from "react";
 
 function App() {
+  const [isName, setIsName] = useState("");
+
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="playgame" element={<PlayGame />} />
+          <Route
+            path="/"
+            element={<Landing setIsName={setIsName} isName={isName} />}
+          />
+          <Route
+            path="playgame"
+            element={<PlayGame setIsName={setIsName} isName={isName} />}
+          />
         </Routes>
       </BrowserRouter>
     </>

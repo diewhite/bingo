@@ -37,12 +37,33 @@ const ChatBox = ({
   setIsChatting,
   newMessage,
   isWatingRoomChat,
+  setIsWatingRoomChat,
 }) => {
   const scrollRef = useRef();
+  const chatRef = useRef();
 
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [isWatingRoomChat, newMessage]);
+
+  // useEffect(() => {
+  //   if (chatRef.current.keyCode === 13) {
+  //     console.log("엔터");
+  //   }
+  // }, []);
+
+  const enterKey = () => {
+    if (chatRef.current.keyCode === 13) {
+      setIsWatingRoomChat([...isWatingRoomChat, isChatting]);
+      console.log("엔터");
+    }
+  };
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      newMessage(isChatting);
+      chatRef.current.value = null;
+    }
+  };
 
   return (
     <Container>
@@ -53,12 +74,21 @@ const ChatBox = ({
       </div>
       <div>
         <input
+          ref={chatRef}
+          onKeyPress={onKeyPress}
           onChange={(e) => {
             setIsChatting(e.target.value);
           }}
           placeholder="채팅을 입력하세요"
         ></input>
-        <button onClick={() => newMessage(isChatting)}>보내기</button>
+        <button
+          onClick={() => {
+            newMessage(isChatting);
+            chatRef.current.value = null;
+          }}
+        >
+          보내기
+        </button>
       </div>
     </Container>
   );

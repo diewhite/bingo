@@ -104,6 +104,7 @@ const PlayGame = ({ setIsName, isName }) => {
             setIsChatting={setIsChatting}
             newMessage={newMessage}
             isWatingRoomChat={isWatingRoomChat}
+            setIsWatingRoomChat={setIsWatingRoomChat}
           ></ChatBox>
           <ButtonWrap>
             <Button onClick={() => setIsCreate(!isCreate)}>방 만들기</Button>

@@ -13,7 +13,6 @@ import { Room } from './dto/events.room.dto';
 import { BingoBoard } from './dto/events.bingoBoard';
 import { EventsService } from './events.service';
 import { Message } from './dto/events.message';
-import { ShortId } from 'shortid';
 
 
   @WebSocketGateway(4005, {
@@ -32,17 +31,18 @@ import { ShortId } from 'shortid';
     public rooms: Map<string, Room> = new Map();
 
     //웹소켓 연결 시 로비 입장
-    handleConnection(Client: Socket) {
-      Client.rooms.clear();
-      Client.join('lobby');
-      console.log(Client.id+" connected!");
+    handleConnection(client: Socket) {
+      client.rooms.clear();
+      client.join('lobby');
+      client.emit('roomList', this.roomList());
+      console.log(client.id+" connected!");
             
     }
 
     //웹소켓 연결해제 시 유저 정보 삭제
-    handleDisconnect(Client: Socket) {
-      console.log(this.users.get(Client.id)+" disconnected!");
-      this.users.delete(Client.id);
+    handleDisconnect(client: Socket) {
+      console.log(this.users.get(client.id)+" disconnected!");
+      this.users.delete(client.id);
     }
 
     //접속 시 입력한 ID 받아서 저장
@@ -85,6 +85,7 @@ import { ShortId } from 'shortid';
       const res = { room, bingoBoard };
 
       this.server.to(client.id).emit('created', res)
+      client.emit('roomList', this.roomList());
     }
 
     //생성된 방에 조인 처리
@@ -114,6 +115,7 @@ import { ShortId } from 'shortid';
         room.player2 = '';
       } else {
         this.rooms.delete(room.number);
+        client.emit('roomList', this.roomList());
       }
       
       client.rooms.clear();
@@ -141,5 +143,13 @@ import { ShortId } from 'shortid';
     createBingo(@ConnectedSocket() client: Socket) {
       const bingoBoard:BingoBoard = this.eventsService.createBoard();
       console.log(bingoBoard);
+    }
+
+    //방 리스트 가져오기
+    roomList():Room[] {
+      const roomList: Room[] = Array.from(this.rooms.keys(), (key: string) => this.rooms.get(key)!);
+      console.log("roomlist length : "+roomList.length);
+      console.log(roomList);
+      return roomList;
     }
   }

@@ -81,6 +81,7 @@ import { Message } from './dto/events.message';
 
       this.server.to(client.id).emit('created', res)
       client.to('lobby').emit('roomList', this.roomList());
+      client.emit('roomList', this.roomList());
     }
 
     //생성된 방에 조인 처리
@@ -102,6 +103,7 @@ import { Message } from './dto/events.message';
 
       this.server.to(client.id).emit('created', res);
       client.to('lobby').emit('roomList', this.roomList());
+      client.emit('roomList', this.roomList());
     }
 
     //방에서 나가기 처리
@@ -124,6 +126,7 @@ import { Message } from './dto/events.message';
       client.leave(roomName);
       client.join('lobby');
       client.to('lobby').emit('roomList', this.roomList());
+      client.emit('roomList', this.roomList());
     }
 
     @SubscribeMessage('check')

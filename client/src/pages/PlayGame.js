@@ -47,6 +47,8 @@ const Button = styled.button`
   font-size: 30px;
 `;
 
+const RefreshBtn = styled.button``;
+
 const PlayGame = ({ setIsName, isName }) => {
   let socket = useRef(null);
 
@@ -62,7 +64,6 @@ const PlayGame = ({ setIsName, isName }) => {
   useEffect(() => {
     if (!socket.current) {
       socket.current = io("http://localhost:4005/");
-
       socket.current.on("connect", function () {
         console.log("Connected");
         socket.current.emit("information", isName);
@@ -74,13 +75,14 @@ const PlayGame = ({ setIsName, isName }) => {
     }
   }, []);
 
-  const newMessage = (text) => {
-    socket.current.emit("newMessage", text);
-  };
-  const createRoom = (title) => {
+  const createGameRoom = (title) => {
     setIsPlayGame(true);
     setIsCreate(false);
     socket.current.emit("create", title);
+  };
+
+  const newMessage = (text) => {
+    socket.current.emit("newMessage", text);
   };
 
   const joinRoom = (data) => {
@@ -101,22 +103,12 @@ const PlayGame = ({ setIsName, isName }) => {
     socket.current.on("created", (data) => {
       setIsJoinedInfo(data);
     });
-  }, [isPlayGame]);
+  }, []);
   useEffect(() => {
     socket.current.on("roomList", (data) => {
       setIsRoomList(data);
     });
-  }, []);
-
-  useEffect(() => {
-    if (!!isPlayGame) {
-      socket.current.on("onMessage", function (data) {
-        setIsGameChat([...isGameChat, `${data.name}:${data.text}`]);
-      });
-    } else if (!isPlayGame) {
-      setIsGameChat([]);
-    }
-  }, []);
+  }, [isRoomList, setIsRoomList]);
 
   useEffect(() => {
     socket.current.on("onMessage", function (data) {
@@ -141,6 +133,7 @@ const PlayGame = ({ setIsName, isName }) => {
       {!isPlayGame ? (
         <>
           <UserInfo isName={isName}></UserInfo>
+          <RefreshBtn></RefreshBtn>
           <RoomBoxWrap>
             {isRoomList.length > 0 ? (
               isRoomList.map((el, index) => {
@@ -167,7 +160,7 @@ const PlayGame = ({ setIsName, isName }) => {
           </ButtonWrap>
           {isCreate ? (
             <CreateRoom
-              createRoom={createRoom}
+              createRoom={createGameRoom}
               isOpen={setIsCreate}
               setIsPlayGame={setIsPlayGame}
             ></CreateRoom>

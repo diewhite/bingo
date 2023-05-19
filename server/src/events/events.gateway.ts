@@ -101,6 +101,7 @@ import { Message } from './dto/events.message';
       const res = { room, bingoBoard };
 
       this.server.to(client.id).emit('created', res);
+      client.to('lobby').emit('roomList', this.roomList());
     }
 
     //방에서 나가기 처리

@@ -54,6 +54,12 @@ const Cancel = styled.span`
 
 const CreateRoom = ({ isOpen, createRoom }) => {
   const [isTitle, setIsTitle] = useState("");
+
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      createRoom(isTitle);
+    }
+  };
   return (
     <Container>
       <Box>
@@ -62,6 +68,7 @@ const CreateRoom = ({ isOpen, createRoom }) => {
         </div>
         <div>
           <input
+            onKeyPress={onKeyPress}
             onChange={(e) => setIsTitle(e.target.value)}
             placeholder="방제목을 입력하세요."
           ></input>

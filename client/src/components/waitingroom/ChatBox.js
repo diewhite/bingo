@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 
 const Container = styled.div`
   width: calc(100%-40px);
-  height: 300px;
+  height: 200px;
   background-color: white;
   margin: 0 20px;
   border-radius: 15px;
@@ -46,18 +46,6 @@ const ChatBox = ({
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [isWatingRoomChat, newMessage]);
 
-  // useEffect(() => {
-  //   if (chatRef.current.keyCode === 13) {
-  //     console.log("엔터");
-  //   }
-  // }, []);
-
-  const enterKey = () => {
-    if (chatRef.current.keyCode === 13) {
-      setIsWatingRoomChat([...isWatingRoomChat, isChatting]);
-      console.log("엔터");
-    }
-  };
   const onKeyPress = (e) => {
     if (e.key === "Enter") {
       newMessage(isChatting);

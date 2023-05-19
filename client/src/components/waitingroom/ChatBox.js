@@ -57,7 +57,7 @@ const ChatBox = ({
     <Container>
       <div ref={scrollRef}>
         {isWatingRoomChat.map((el, index) => {
-          return <span index={index}>{el}</span>;
+          return <span key={index}>{el}</span>;
         })}
       </div>
       <div>

@@ -49,8 +49,6 @@ import { Message } from './dto/events.message';
     @SubscribeMessage('information')
     information(@MessageBody() name: string , @ConnectedSocket() client: Socket) {
       this.users.set(client.id, name);
-      console.log("client id : "+client.id);
-      console.log("client name : "+name);
     }
     
     //클라이언트에서 보낸 메세지 처리
@@ -65,8 +63,6 @@ import { Message } from './dto/events.message';
         room = key;
       }
       this.server.to(room).emit('onMessage', message);
-      console.log(message.name+" : "+message.text);      
-      console.log("room : "+room);
     }
 
     //방 생성 처리
@@ -78,14 +74,13 @@ import { Message } from './dto/events.message';
       room.player1 = this.users.get(client.id);
       client.leave('lobby');
       this.rooms.set(room.number, room);
-      console.log(room);
       client.join(room.number);
             
       const bingoBoard: BingoBoard = this.eventsService.createBoard();
       const res = { room, bingoBoard };
 
       this.server.to(client.id).emit('created', res)
-      client.emit('roomList', this.roomList());
+      client.to('lobby').emit('roomList', this.roomList());
     }
 
     //생성된 방에 조인 처리
@@ -93,44 +88,42 @@ import { Message } from './dto/events.message';
     join(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
       const room:Room = this.rooms.get(data);
 
-      if(!room.player1){
+      if(room.player1==''){
         room.player1 = this.users.get(client.id);
       } else {
         room.player2 = this.users.get(client.id);
       }
-
       this.rooms.set(room.number,room);
+      client.leave('lobby');
       client.join(data);
-      this.server.to(client.id).emit('joined', room);
+
+      const bingoBoard: BingoBoard = this.eventsService.createBoard();
+      const res = { room, bingoBoard };
+
+      this.server.to(client.id).emit('created', res);
     }
 
     //방에서 나가기 처리
     @SubscribeMessage('leave')
     leave(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-      const room: Room = this.rooms.get(data);
+      let roomName;
+
+      for (const key of client.rooms.keys()) {
+        roomName = key;
+      }
+      const room: Room = this.rooms.get(roomName);
       
-      if(room.player1==this.users.get(client.id)){
+      if(room.player1==this.users.get(client.id) && !(room.player2=='')){
         room.player1 = '';
-      } else if (room.player2==this.users.get(client.id)){
+      } else if (room.player2==this.users.get(client.id) && !(room.player1=='')){
         room.player2 = '';
       } else {
         this.rooms.delete(room.number);
-        client.emit('roomList', this.roomList());
       }
-      
-      client.rooms.clear();
+      client.leave(roomName);
       client.join('lobby');
+      client.to('lobby').emit('roomList', this.roomList());
     }
-
-    // @SubscribeMessage('check')
-    // check(@ConnectedSocket() client: Socket) {
-    //   console.log(this.users.get(client.id));
-    //   console.log(this.rooms.length);
-    //   console.log("client room size : "+client.rooms.size);
-    //   for (const key of client.rooms.keys()) {
-    //     console.log(key);
-    //   }
-    // }
 
     @SubscribeMessage('check')
     check(@MessageBody() data: BingoBoard, @ConnectedSocket() client: Socket): BingoBoard {
@@ -142,14 +135,11 @@ import { Message } from './dto/events.message';
     @SubscribeMessage('createBingo')
     createBingo(@ConnectedSocket() client: Socket) {
       const bingoBoard:BingoBoard = this.eventsService.createBoard();
-      console.log(bingoBoard);
     }
 
     //방 리스트 가져오기
     roomList():Room[] {
       const roomList: Room[] = Array.from(this.rooms.keys(), (key: string) => this.rooms.get(key)!);
-      console.log("roomlist length : "+roomList.length);
-      console.log(roomList);
       return roomList;
     }
   }

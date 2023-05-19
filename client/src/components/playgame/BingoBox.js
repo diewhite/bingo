@@ -17,10 +17,32 @@ const BingoBoard = styled.div`
   flex-wrap: wrap;
 `;
 const BingoBox = ({ newMessage, isGameChat, isJoinedInfo, leaveRoom }) => {
+  console.log(isJoinedInfo, "isJoinedInfo");
   return (
     <Wrap>
       <BingoBoard>
-        <BingoNumberBox>1</BingoNumberBox>
+        {isJoinedInfo?.bingoBoard?.cell[0].length > 0 &&
+          isJoinedInfo?.bingoBoard?.cell[0]?.map((el, index) => {
+            return <BingoNumberBox>{el.number}</BingoNumberBox>;
+          })}
+        {isJoinedInfo?.bingoBoard?.cell[1].length > 0 &&
+          isJoinedInfo?.bingoBoard?.cell[1]?.map((el, index) => {
+            return <BingoNumberBox>{el.number}</BingoNumberBox>;
+          })}
+        {isJoinedInfo?.bingoBoard?.cell[2].length > 0 &&
+          isJoinedInfo?.bingoBoard?.cell[2]?.map((el, index) => {
+            return <BingoNumberBox>{el.number}</BingoNumberBox>;
+          })}
+        {isJoinedInfo?.bingoBoard?.cell[3].length > 0 &&
+          isJoinedInfo?.bingoBoard?.cell[3]?.map((el, index) => {
+            return <BingoNumberBox>{el.number}</BingoNumberBox>;
+          })}
+        {isJoinedInfo?.bingoBoard?.cell[4].length > 0 &&
+          isJoinedInfo?.bingoBoard?.cell[4]?.map((el, index) => {
+            return <BingoNumberBox>{el.number}</BingoNumberBox>;
+          })}
+
+        {/* <BingoNumberBox>1</BingoNumberBox>
         <BingoNumberBox>2</BingoNumberBox>
         <BingoNumberBox>3</BingoNumberBox>
         <BingoNumberBox>4</BingoNumberBox>
@@ -44,7 +66,7 @@ const BingoBox = ({ newMessage, isGameChat, isJoinedInfo, leaveRoom }) => {
         <BingoNumberBox>22</BingoNumberBox>
         <BingoNumberBox>23</BingoNumberBox>
         <BingoNumberBox>24</BingoNumberBox>
-        <BingoNumberBox>25</BingoNumberBox>
+        <BingoNumberBox>25</BingoNumberBox> */}
       </BingoBoard>
       <InGameChatBox
         leaveRoom={leaveRoom}

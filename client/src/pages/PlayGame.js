@@ -13,7 +13,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 100vh;
+  height: calc(100vh - 100px);
   background-color: #3e7aeb;
   padding: 50px;
   min-width: 800px;
@@ -24,8 +24,11 @@ const RoomBoxWrap = styled.div`
   flex-wrap: wrap;
   gap: 10px;
   width: calc(100% - 40px);
-
+  height: 200px;
+  overflow-y: scroll;
   padding: 20px;
+  height: 100%;
+  /* height: 250px; */
 `;
 const ButtonWrap = styled.div`
   display: flex;
@@ -52,6 +55,9 @@ const PlayGame = ({ setIsName, isName }) => {
   const [isPlayGame, setIsPlayGame] = useState(false);
   const [isChatting, setIsChatting] = useState("");
   const [isWatingRoomChat, setIsWatingRoomChat] = useState([]);
+  const [isRoomList, setIsRoomList] = useState([]);
+  const [isGameChat, setIsGameChat] = useState([]);
+  const [isJoinedInfo, setIsJoinedInfo] = useState("");
 
   useEffect(() => {
     if (!socket.current) {
@@ -66,20 +72,58 @@ const PlayGame = ({ setIsName, isName }) => {
         );
       });
     }
-  });
+  }, []);
 
   const newMessage = (text) => {
     socket.current.emit("newMessage", text);
-    text = "";
   };
+  const createRoom = (title) => {
+    setIsPlayGame(true);
+    setIsCreate(false);
+    socket.current.emit("create", title);
+  };
+
+  const joinRoom = (data) => {
+    if (data.player1.length > 0 && data.player2.length > 0) {
+      alert("사람 꽉찼음");
+    } else {
+      setIsPlayGame(true);
+      socket.current.emit("join", data.number);
+    }
+  };
+
+  const leaveRoom = () => {
+    socket.current.emit("leave");
+    setIsPlayGame(false);
+    console.log("???");
+  };
+
+  useEffect(() => {
+    socket.current.on("created", (data) => {
+      setIsJoinedInfo(data);
+    });
+  }, [isPlayGame]);
+  useEffect(() => {
+    socket.current.on("roomList", (data) => {
+      setIsRoomList(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!!isPlayGame) {
+      socket.current.on("onMessage", function (data) {
+        setIsGameChat([...isGameChat, `${data.name}:${data.text}`]);
+      });
+    } else if (!isPlayGame) {
+      setIsGameChat([]);
+    }
+  }, []);
 
   useEffect(() => {
     socket.current.on("onMessage", function (data) {
       setIsWatingRoomChat([...isWatingRoomChat, `${data.name}:${data.text}`]);
     });
-
-    console.log(isWatingRoomChat, "isWatingRoom");
-  }, [newMessage]);
+  }, []);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -87,17 +131,22 @@ const PlayGame = ({ setIsName, isName }) => {
       navigate("/");
     }
   }, []);
+
   return (
     <Container>
       {!isPlayGame ? (
         <>
           <UserInfo isName={isName}></UserInfo>
           <RoomBoxWrap>
-            <RoomBox setIsPlayGame={setIsPlayGame} />
-            <RoomBox setIsPlayGame={setIsPlayGame} />
-            <RoomBox setIsPlayGame={setIsPlayGame} />
-            <RoomBox setIsPlayGame={setIsPlayGame} />
-            <RoomBox setIsPlayGame={setIsPlayGame} />
+            {isRoomList.length > 0 ? (
+              isRoomList.map((el, index) => {
+                return (
+                  <RoomBox key={el} el={el} index={index} joinRoom={joinRoom} />
+                );
+              })
+            ) : (
+              <span>방이 없습니다.</span>
+            )}
           </RoomBoxWrap>
           <ChatBox
             isChatting={isChatting}
@@ -112,7 +161,15 @@ const PlayGame = ({ setIsName, isName }) => {
               닉네임 변경
             </Button>
           </ButtonWrap>
-          {isCreate ? <CreateRoom isOpen={setIsCreate}></CreateRoom> : <></>}
+          {isCreate ? (
+            <CreateRoom
+              createRoom={createRoom}
+              isOpen={setIsCreate}
+              setIsPlayGame={setIsPlayGame}
+            ></CreateRoom>
+          ) : (
+            <></>
+          )}
           {isChangeName ? (
             <ChangeName isOpen={setIsChangeName}></ChangeName>
           ) : (
@@ -121,7 +178,12 @@ const PlayGame = ({ setIsName, isName }) => {
         </>
       ) : (
         <>
-          <BingoBox></BingoBox>
+          <BingoBox
+            newMessage={newMessage}
+            isGameChat={isGameChat}
+            isJoinedInfo={isJoinedInfo}
+            leaveRoom={leaveRoom}
+          ></BingoBox>
         </>
       )}
     </Container>

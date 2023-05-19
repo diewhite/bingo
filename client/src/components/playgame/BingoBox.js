@@ -16,7 +16,7 @@ const BingoBoard = styled.div`
   gap: 5px;
   flex-wrap: wrap;
 `;
-const BingoBox = () => {
+const BingoBox = ({ newMessage, isGameChat, isJoinedInfo, leaveRoom }) => {
   return (
     <Wrap>
       <BingoBoard>
@@ -46,7 +46,12 @@ const BingoBox = () => {
         <BingoNumberBox>24</BingoNumberBox>
         <BingoNumberBox>25</BingoNumberBox>
       </BingoBoard>
-      <InGameChatBox></InGameChatBox>
+      <InGameChatBox
+        leaveRoom={leaveRoom}
+        newMessage={newMessage}
+        isGameChat={isGameChat}
+        isJoinedInfo={isJoinedInfo}
+      ></InGameChatBox>
     </Wrap>
   );
 };

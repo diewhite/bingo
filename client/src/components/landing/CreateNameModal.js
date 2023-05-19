@@ -54,6 +54,11 @@ const Cancel = styled.span`
 `;
 
 const CreateNameModal = ({ setIsName, setIsOpen, handleClickToGame }) => {
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleClickToGame();
+    }
+  };
   return (
     <Container>
       <Box>
@@ -62,6 +67,7 @@ const CreateNameModal = ({ setIsName, setIsOpen, handleClickToGame }) => {
         </div>
         <div>
           <input
+            onKeyPress={onKeyPress}
             placeholder="닉네임을 입력하세요."
             onChange={(e) => setIsName(e.target.value)}
           ></input>

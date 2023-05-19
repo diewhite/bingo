@@ -54,12 +54,14 @@ const Container = styled.div`
   }
 `;
 
-const RoomBox = ({ setIsPlayGame }) => {
+const RoomBox = ({ el, index, joinRoom }) => {
   return (
-    <Container onClick={() => setIsPlayGame(true)}>
-      <div>1</div>
-      <div>빙고 같이 할 사람 드루와</div>
-      <div>1/2</div>
+    <Container onClick={() => joinRoom(el)}>
+      <div>{index + 1}</div>
+      <div>{el.title}</div>
+      <div>
+        {el.player1.length > 0 && el.player2.length > 0 ? "2/2" : "1/2"}
+      </div>
     </Container>
   );
 };

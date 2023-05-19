@@ -60,7 +60,7 @@ const RoomBox = ({ el, index, joinRoom }) => {
       <div>{index + 1}</div>
       <div>{el.title}</div>
       <div>
-        {el.player1.length > 0 && el.player2.length > 0 ? "2/2" : "1/2"}
+        {el.player1?.length > 0 && el.player2?.length > 0 ? "2/2" : "1/2"}
       </div>
     </Container>
   );

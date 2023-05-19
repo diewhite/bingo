@@ -84,7 +84,7 @@ const PlayGame = ({ setIsName, isName }) => {
   };
 
   const joinRoom = (data) => {
-    if (data.player1.length > 0 && data.player2.length > 0) {
+    if (data.player1?.length > 0 && data.player2?.length > 0) {
       alert("사람 꽉찼음");
     } else {
       setIsPlayGame(true);
@@ -95,7 +95,6 @@ const PlayGame = ({ setIsName, isName }) => {
   const leaveRoom = () => {
     socket.current.emit("leave");
     setIsPlayGame(false);
-    console.log("???");
   };
 
   useEffect(() => {
@@ -122,8 +121,13 @@ const PlayGame = ({ setIsName, isName }) => {
   useEffect(() => {
     socket.current.on("onMessage", function (data) {
       setIsWatingRoomChat([...isWatingRoomChat, `${data.name}:${data.text}`]);
+      if (!!isPlayGame) {
+        setIsGameChat([...isGameChat, `${data.name}:${data.text}`]);
+      } else if (!isPlayGame) {
+        setIsGameChat([]);
+      }
     });
-  }, []);
+  }, [newMessage]);
 
   const navigate = useNavigate();
   useEffect(() => {

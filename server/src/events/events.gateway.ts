@@ -99,10 +99,16 @@ import { Message } from './dto/events.message';
       client.leave('lobby');
       client.join(data);
 
-      const bingoBoard: BingoBoard = this.eventsService.createBoard();
-      const res = { room, bingoBoard };
+      //player1 데이터 생성 및 전송
+      let bingoBoard: BingoBoard = this.eventsService.createBoard();
+      let res = { room, bingoBoard };
+      this.server.to(room.player1).emit('created', res);
 
-      this.server.to(client.id).emit('created', res);
+      //player2 데이터 생성 및 전송
+      bingoBoard = this.eventsService.createBoard();
+      res = { room, bingoBoard };
+      this.server.to(room.player2).emit('created', res);
+
       client.to('lobby').emit('roomList', this.roomList());
       client.emit('roomList', this.roomList());
     }

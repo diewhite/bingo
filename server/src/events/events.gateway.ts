@@ -101,13 +101,30 @@ import { Message } from './dto/events.message';
 
       //player1 데이터 생성 및 전송
       let bingoBoard: BingoBoard = this.eventsService.createBoard();
+      bingoBoard.turn = true;
       let res = { room, bingoBoard };
-      this.server.to(room.player1).emit('created', res);
+      let searchValue = room.player1;
+      let player1 = '';
+      let foundEntry = Array.from(this.users.entries()).find(([, value]) => value === searchValue);
+      if (foundEntry) {
+        const [key] = foundEntry;
+        player1 = key;
+      }
+
+      this.server.to(player1).emit('created', res);
 
       //player2 데이터 생성 및 전송
       bingoBoard = this.eventsService.createBoard();
       res = { room, bingoBoard };
-      this.server.to(room.player2).emit('created', res);
+      searchValue = room.player2;
+      let player2 = '';
+      foundEntry = Array.from(this.users.entries()).find(([, value]) => value === searchValue);
+      if (foundEntry) {
+        const [key] = foundEntry;
+        player2 = key;
+      }
+
+      this.server.to(player2).emit('created', res);
 
       client.to('lobby').emit('roomList', this.roomList());
       client.emit('roomList', this.roomList());

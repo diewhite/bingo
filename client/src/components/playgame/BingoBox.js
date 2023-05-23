@@ -6,6 +6,7 @@ import InGameChatBox from "./InGameChatBox";
 const Wrap = styled.div`
   margin: 0 auto;
   display: flex;
+  flex-direction: column;
 `;
 const BingoBoard = styled.div`
   display: flex;
@@ -16,64 +17,51 @@ const BingoBoard = styled.div`
   gap: 5px;
   flex-wrap: wrap;
 `;
+const Title = styled.div`
+  margin: 20px;
+  font-size: 30px;
+  color: #fff;
+  font-weight: 700;
+`;
+const InnerWrap = styled.div`
+  margin: 0 auto;
+  display: flex;
+`;
 const BingoBox = ({ newMessage, isGameChat, isJoinedInfo, leaveRoom }) => {
   console.log(isJoinedInfo, "isJoinedInfo");
   return (
     <Wrap>
-      <BingoBoard>
-        {isJoinedInfo?.bingoBoard?.cell[0].length > 0 &&
-          isJoinedInfo?.bingoBoard?.cell[0]?.map((el, index) => {
-            return <BingoNumberBox>{el.number}</BingoNumberBox>;
-          })}
-        {isJoinedInfo?.bingoBoard?.cell[1].length > 0 &&
-          isJoinedInfo?.bingoBoard?.cell[1]?.map((el, index) => {
-            return <BingoNumberBox>{el.number}</BingoNumberBox>;
-          })}
-        {isJoinedInfo?.bingoBoard?.cell[2].length > 0 &&
-          isJoinedInfo?.bingoBoard?.cell[2]?.map((el, index) => {
-            return <BingoNumberBox>{el.number}</BingoNumberBox>;
-          })}
-        {isJoinedInfo?.bingoBoard?.cell[3].length > 0 &&
-          isJoinedInfo?.bingoBoard?.cell[3]?.map((el, index) => {
-            return <BingoNumberBox>{el.number}</BingoNumberBox>;
-          })}
-        {isJoinedInfo?.bingoBoard?.cell[4].length > 0 &&
-          isJoinedInfo?.bingoBoard?.cell[4]?.map((el, index) => {
-            return <BingoNumberBox>{el.number}</BingoNumberBox>;
-          })}
-
-        {/* <BingoNumberBox>1</BingoNumberBox>
-        <BingoNumberBox>2</BingoNumberBox>
-        <BingoNumberBox>3</BingoNumberBox>
-        <BingoNumberBox>4</BingoNumberBox>
-        <BingoNumberBox>5</BingoNumberBox>
-        <BingoNumberBox>6</BingoNumberBox>
-        <BingoNumberBox>7</BingoNumberBox>
-        <BingoNumberBox>8</BingoNumberBox>
-        <BingoNumberBox>9</BingoNumberBox>
-        <BingoNumberBox>10</BingoNumberBox>
-        <BingoNumberBox>11</BingoNumberBox>
-        <BingoNumberBox>12</BingoNumberBox>
-        <BingoNumberBox>13</BingoNumberBox>
-        <BingoNumberBox>14</BingoNumberBox>
-        <BingoNumberBox>15</BingoNumberBox>
-        <BingoNumberBox>16</BingoNumberBox>
-        <BingoNumberBox>17</BingoNumberBox>
-        <BingoNumberBox>18</BingoNumberBox>
-        <BingoNumberBox>19</BingoNumberBox>
-        <BingoNumberBox>20</BingoNumberBox>
-        <BingoNumberBox>21</BingoNumberBox>
-        <BingoNumberBox>22</BingoNumberBox>
-        <BingoNumberBox>23</BingoNumberBox>
-        <BingoNumberBox>24</BingoNumberBox>
-        <BingoNumberBox>25</BingoNumberBox> */}
-      </BingoBoard>
-      <InGameChatBox
-        leaveRoom={leaveRoom}
-        newMessage={newMessage}
-        isGameChat={isGameChat}
-        isJoinedInfo={isJoinedInfo}
-      ></InGameChatBox>
+      <Title>방제목 : {isJoinedInfo?.room?.title}</Title>
+      <InnerWrap>
+        <BingoBoard>
+          {isJoinedInfo?.bingoBoard?.cell[0].length > 0 &&
+            isJoinedInfo?.bingoBoard?.cell[0]?.map((el, index) => {
+              return <BingoNumberBox>{el.number}</BingoNumberBox>;
+            })}
+          {isJoinedInfo?.bingoBoard?.cell[1].length > 0 &&
+            isJoinedInfo?.bingoBoard?.cell[1]?.map((el, index) => {
+              return <BingoNumberBox>{el.number}</BingoNumberBox>;
+            })}
+          {isJoinedInfo?.bingoBoard?.cell[2].length > 0 &&
+            isJoinedInfo?.bingoBoard?.cell[2]?.map((el, index) => {
+              return <BingoNumberBox>{el.number}</BingoNumberBox>;
+            })}
+          {isJoinedInfo?.bingoBoard?.cell[3].length > 0 &&
+            isJoinedInfo?.bingoBoard?.cell[3]?.map((el, index) => {
+              return <BingoNumberBox>{el.number}</BingoNumberBox>;
+            })}
+          {isJoinedInfo?.bingoBoard?.cell[4].length > 0 &&
+            isJoinedInfo?.bingoBoard?.cell[4]?.map((el, index) => {
+              return <BingoNumberBox>{el.number}</BingoNumberBox>;
+            })}
+        </BingoBoard>
+        <InGameChatBox
+          leaveRoom={leaveRoom}
+          newMessage={newMessage}
+          isGameChat={isGameChat}
+          isJoinedInfo={isJoinedInfo}
+        ></InGameChatBox>
+      </InnerWrap>
     </Wrap>
   );
 };

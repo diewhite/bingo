@@ -104,6 +104,8 @@ const PlayGame = ({ setIsName, isName }) => {
       setIsJoinedInfo(data);
     });
   }, []);
+
+  // console.log(isJoinedInfo, "isJoinedInfo");
   useEffect(() => {
     socket.current.on("roomList", (data) => {
       setIsRoomList(data);
@@ -120,6 +122,12 @@ const PlayGame = ({ setIsName, isName }) => {
       }
     });
   }, [newMessage]);
+
+  useEffect(() => {
+    socket.current.on("check", (data) => {
+      console.log(data, "?data");
+    });
+  }, []);
 
   const navigate = useNavigate();
   useEffect(() => {

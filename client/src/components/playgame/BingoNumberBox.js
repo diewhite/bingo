@@ -37,7 +37,7 @@ const BingoNumberBox = ({
   }, [isClicked]);
 
   useEffect(() => {
-    if (!!isBingoNumber[Row][Column].isSelected) {
+    if (!!isBingoNumber[Row][Column]?.isSelected) {
       setIsColor(false);
     }
   }, [isClicked]);

@@ -77,6 +77,7 @@ import { Message } from './dto/events.message';
       client.join(room.number);
             
       const bingoBoard: BingoBoard = this.eventsService.createBoard();
+      bingoBoard.turn = true;
       const res = { room, bingoBoard };
 
       this.server.to(client.id).emit('created', res)
@@ -129,10 +130,31 @@ import { Message } from './dto/events.message';
       client.emit('roomList', this.roomList());
     }
 
+    //빙고 게임 결과 확인
     @SubscribeMessage('check')
-    check(@MessageBody() data: BingoBoard, @ConnectedSocket() client: Socket): BingoBoard {
-      const userData:BingoBoard = data;
-      return this.eventsService.checklogic(userData);
+    check(@MessageBody() data: BingoBoard, @ConnectedSocket() client: Socket) {
+      let roomName;
+
+      const userData:BingoBoard = this.eventsService.checklogic(data);
+
+      for (const key of client.rooms.keys()) {
+        roomName = key;
+      }
+      const room: Room = this.rooms.get(roomName);
+
+      //player1 승리
+      if(userData.result == "WIN" && room.player1 == this.users.get(client.id)){
+        this.server.to(room.player1).emit('result', 'WIN');
+        this.server.to(room.player2).emit('result', 'LOSE');
+      }
+
+      //player2 승리
+      if(userData.result == "WIN" && room.player2 == this.users.get(client.id)){
+        this.server.to(room.player2).emit('result', 'WIN');
+        this.server.to(room.player1).emit('result', 'LOSE');
+      }
+      
+      return userData;
     }
 
     //bingoboard 생성 테스트

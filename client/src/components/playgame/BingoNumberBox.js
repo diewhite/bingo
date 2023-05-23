@@ -31,15 +31,14 @@ const BingoNumberBox = ({
     if (!!isClicked) {
       memo[Row][Column] = { isSelected: true, number: data.number };
       setCheckedBingo(memo);
-      // console.log("1111");
+      console.log(isBingoNumber, "isBingoNumber");
+      console.log(isJoinedInfo, "isJoinedInfo");
     }
   }, [isClicked]);
-  console.log(isBingoNumber, "isBingoNumber");
 
   useEffect(() => {
     if (!!isBingoNumber[Row][Column].isSelected) {
       setIsColor(false);
-      console.log("2222");
     }
   }, [isClicked]);
 

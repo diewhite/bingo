@@ -103,26 +103,14 @@ import { Message } from './dto/events.message';
       let bingoBoard: BingoBoard = this.eventsService.createBoard();
       bingoBoard.turn = true;
       let res = { room, bingoBoard };
-      let searchValue = room.player1;
-      let player1 = '';
-      let foundEntry = Array.from(this.users.entries()).find(([, value]) => value === searchValue);
-      if (foundEntry) {
-        const [key] = foundEntry;
-        player1 = key;
-      }
+      const player1 = this.getId(room.player1);
 
       this.server.to(player1).emit('created', res);
 
       //player2 데이터 생성 및 전송
       bingoBoard = this.eventsService.createBoard();
       res = { room, bingoBoard };
-      searchValue = room.player2;
-      let player2 = '';
-      foundEntry = Array.from(this.users.entries()).find(([, value]) => value === searchValue);
-      if (foundEntry) {
-        const [key] = foundEntry;
-        player2 = key;
-      }
+      const player2 = this.getId(room.player2);
 
       this.server.to(player2).emit('created', res);
 
@@ -167,17 +155,17 @@ import { Message } from './dto/events.message';
 
       //player1 승리
       if(userData.result == "WIN" && room.player1 == this.users.get(client.id)){
-        this.server.to(room.player1).emit('result', 'WIN');
-        this.server.to(room.player2).emit('result', 'LOSE');
+        this.server.to(this.getId(room.player1)).emit('result', 'WIN');
+        this.server.to(this.getId(room.player2)).emit('result', 'LOSE');
       }
 
       //player2 승리
       if(userData.result == "WIN" && room.player2 == this.users.get(client.id)){
-        this.server.to(room.player2).emit('result', 'WIN');
-        this.server.to(room.player1).emit('result', 'LOSE');
+        this.server.to(this.getId(room.player2)).emit('result', 'WIN');
+        this.server.to(this.getId(room.player1)).emit('result', 'LOSE');
       }
       
-      return userData;
+      this.server.to(client.id).emit('created', userData);
     }
 
     //bingoboard 생성 테스트
@@ -190,5 +178,17 @@ import { Message } from './dto/events.message';
     roomList():Room[] {
       const roomList: Room[] = Array.from(this.rooms.keys(), (key: string) => this.rooms.get(key)!);
       return roomList;
+    }
+
+    //Socket ID 가져오기
+    getId(player):string {
+      const searchValue = player;
+      let foundId = '';
+      let foundEntry = Array.from(this.users.entries()).find(([, value]) => value === searchValue);
+      if (foundEntry) {
+        const [key] = foundEntry;
+        foundId = key;
+      }
+      return foundId;
     }
   }

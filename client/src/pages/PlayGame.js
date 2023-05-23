@@ -99,6 +99,10 @@ const PlayGame = ({ setIsName, isName }) => {
     setIsPlayGame(false);
   };
 
+  const isClickedBingo = (data) => {
+    socket.current.emit("check", data);
+  };
+
   useEffect(() => {
     socket.current.on("created", (data) => {
       setIsJoinedInfo(data);
@@ -188,6 +192,7 @@ const PlayGame = ({ setIsName, isName }) => {
             isGameChat={isGameChat}
             isJoinedInfo={isJoinedInfo}
             leaveRoom={leaveRoom}
+            isClickedBingo={isClickedBingo}
           ></BingoBox>
         </>
       )}

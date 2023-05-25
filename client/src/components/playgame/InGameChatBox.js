@@ -78,7 +78,7 @@ const InGameChatBox = ({ newMessage, isGameChat, isJoinedInfo, leaveRoom }) => {
       chatRef.current.value = null;
     }
   };
-  console.log(isJoinedInfo, "isJoinedInfo");
+
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [isGameChat]);

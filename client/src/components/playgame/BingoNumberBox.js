@@ -48,7 +48,11 @@ const BingoNumberBox = ({
   // }, [isClicked, isPlayGame]);
 
   const boxClickHandler = () => {
-    if (isClicked === false && !!isJoinedInfo?.bingoBoard?.turn) {
+    if (
+      isClicked === false &&
+      !data?.isSelected &&
+      !!isJoinedInfo?.bingoBoard?.turn
+    ) {
       setIsClicked(true);
       setIsColor(false);
       isClickedBingo({
@@ -58,7 +62,7 @@ const BingoNumberBox = ({
       });
     }
   };
-  console.log(checkedBingo, "checkBingo");
+
   return (
     <Wrap
       onClick={() => {

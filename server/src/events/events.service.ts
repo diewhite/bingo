@@ -39,7 +39,7 @@ export class EventsService {
                 completeLine++;
             }
         }
-
+        
         //colums check
         for (let i = 0; i < rowSize; i++) {
             let yChecked:number = 0;
@@ -54,11 +54,11 @@ export class EventsService {
         }
 
         //cross-line check-1
-        if(userData.cell[0][0] && userData.cell[1][1] && userData.cell[2][2] && userData.cell[3][3] && userData.cell[4][4]) {
+        if(userData.cell[0][0].isSelected && userData.cell[1][1].isSelected && userData.cell[2][2].isSelected && userData.cell[3][3].isSelected && userData.cell[4][4].isSelected) {
             completeLine++;
         }
         //cross-line check-2
-        if(userData.cell[0][4] && userData.cell[1][3] && userData.cell[2][2] && userData.cell[3][1] && userData.cell[4][0]) {
+        if(userData.cell[0][4].isSelected && userData.cell[1][3].isSelected && userData.cell[2][2].isSelected && userData.cell[3][1].isSelected && userData.cell[4][0].isSelected) {
             completeLine++;
         }
         
@@ -67,7 +67,7 @@ export class EventsService {
         if(completeLine>=3){
             userData.result = RESULT.WIN;
         }
-
+        
         return userData;
     }
 }

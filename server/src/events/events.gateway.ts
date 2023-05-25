@@ -29,6 +29,7 @@ import { Message } from './dto/events.message';
     
     public users: Map<string, string> = new Map();
     public rooms: Map<string, Room> = new Map();
+    public gameData: Map<string, BingoBoard> = new Map();
 
     //웹소켓 연결 시 로비 입장
     handleConnection(client: Socket) {
@@ -79,6 +80,8 @@ import { Message } from './dto/events.message';
       const bingoBoard: BingoBoard = this.eventsService.createBoard();
       bingoBoard.turn = true;
       const res = { room, bingoBoard };
+      
+      this.gameData.set(client.id, bingoBoard);
 
       this.server.to(client.id).emit('created', res)
       client.to('lobby').emit('roomList', this.roomList());
@@ -104,14 +107,14 @@ import { Message } from './dto/events.message';
       bingoBoard.turn = true;
       let res = { room, bingoBoard };
       const player1 = this.getId(room.player1);
-
+      this.gameData.set(player1, bingoBoard);
       this.server.to(player1).emit('created', res);
 
       //player2 데이터 생성 및 전송
       bingoBoard = this.eventsService.createBoard();
       res = { room, bingoBoard };
       const player2 = this.getId(room.player2);
-
+      this.gameData.set(player2, bingoBoard);
       this.server.to(player2).emit('created', res);
 
       client.to('lobby').emit('roomList', this.roomList());
@@ -135,6 +138,7 @@ import { Message } from './dto/events.message';
       } else {
         this.rooms.delete(room.number);
       }
+      this.gameData.delete(this.users.get(client.id));
       client.leave(roomName);
       client.join('lobby');
       client.to('lobby').emit('roomList', this.roomList());
@@ -147,12 +151,12 @@ import { Message } from './dto/events.message';
       let roomName;
 
       const userData:BingoBoard = this.eventsService.checklogic(data);
-
+      
       for (const key of client.rooms.keys()) {
-        roomName = key;
+      roomName = key;
       }
       const room: Room = this.rooms.get(roomName);
-
+      
       //player1 승리
       if(userData.result == "WIN" && room.player1 == this.users.get(client.id)){
         this.server.to(this.getId(room.player1)).emit('result', 'WIN');
@@ -164,8 +168,66 @@ import { Message } from './dto/events.message';
         this.server.to(this.getId(room.player2)).emit('result', 'WIN');
         this.server.to(this.getId(room.player1)).emit('result', 'LOSE');
       }
+
+      //player1 턴오버, player2 isSelected 동기화
+      if(room.player1 == this.users.get(client.id)){
+        let selectedNumber:number[] = [];
+        this.gameData.set(client.id, userData);
+        
+        for(let i=0;i<5;i++){
+          for(let j=0;j<5;j++){
+            if(userData.cell[i][j]?.isSelected){
+              selectedNumber.push(userData.cell[i][j].number);
+            }
+          }
+        }
+        const player2Data:BingoBoard = this.gameData.get(this.getId(room.player2));
+
+        selectedNumber.forEach((n)=>{
+          for(let i=0;i<5;i++){
+            for(let j=0;j<5;j++){
+              if(player2Data.cell[i][j]?.number == n){
+                player2Data.cell[i][j].isSelected = true;
+              }
+            }
+          }
+        });
+
+        player2Data.turn = true;
+
+        this.server.to(this.getId(room.player2)).emit('created', player2Data);
+      }
       
-      this.server.to(client.id).emit('created', userData);
+
+      //player2 턴오버, player1 isSelected 동기화
+      if(room.player2 == this.users.get(client.id)){
+        let selectedNumber:number[] = [];
+        this.gameData.set(client.id, userData);
+        
+        for(let i=0;i<5;i++){
+          for(let j=0;j<5;j++){
+            if(userData.cell[i][j]?.isSelected){
+              selectedNumber.push(userData.cell[i][j].number);
+            }
+          }
+        }
+        const player1Data:BingoBoard = this.gameData.get(this.getId(room.player1));
+        
+        selectedNumber.forEach((n)=>{
+          for(let i=0;i<5;i++){
+            for(let j=0;j<5;j++){
+              if(player1Data.cell[i][j]?.number == n){
+                player1Data.cell[i][j].isSelected = true;
+              }
+            }
+          }
+        });
+
+        player1Data.turn = true;
+
+        this.server.to(this.getId(room.player1)).emit('created', player1Data);
+      }
+    
     }
 
     //bingoboard 생성 테스트

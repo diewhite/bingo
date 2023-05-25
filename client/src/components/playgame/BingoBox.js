@@ -37,12 +37,12 @@ const BingoBox = ({
 }) => {
   const [isBingoNumber, setIsBingoNumber] = useState([]);
   useEffect(() => {
-    if (isJoinedInfo.bingoBoard.result === "WIN") {
+    if (isJoinedInfo?.bingoBoard?.result === "WIN") {
       alert("이겼음");
-    } else if (isJoinedInfo.bingoBoard.result === "LOSE") {
+    } else if (isJoinedInfo?.bingoBoard?.result === "LOSE") {
       alert("졌음");
     }
-  });
+  }, [isJoinedInfo]);
 
   useEffect(() => {
     if (!!isJoinedInfo) {

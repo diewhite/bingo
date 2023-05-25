@@ -33,21 +33,25 @@ const BingoNumberBox = ({
     }
   }, [isPlayGame]);
 
-  useEffect(() => {
-    let memo = isBingoNumber;
-    if (!!isClicked) {
-      memo[Row][Column] = { number: data.number, isSelected: true };
-      setCheckedBingo(memo);
-    }
-  }, [isClicked]);
+  // useEffect(() => {
+  //   let memo = isBingoNumber;
+  //   if (!!isClicked) {
+  //     memo[Row][Column] = { number: data.number, isSelected: true };
+  //     setCheckedBingo(memo);
+  //   }
+  // }, [isClicked]);
 
   // useEffect(() => {
   //   if (!!isBingoNumber[Row][Column]?.isSelected) {
   //     setIsColor(false);
   //   }
   // }, [isClicked, isPlayGame]);
+  console.log(isJoinedInfo, "isJoiendInfo");
 
   const boxClickHandler = () => {
+    let memo = isBingoNumber;
+    memo[Row][Column] = { number: data.number, isSelected: true };
+    setCheckedBingo(memo);
     if (
       isClicked === false &&
       !data?.isSelected &&

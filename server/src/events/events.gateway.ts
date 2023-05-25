@@ -183,7 +183,14 @@ import { Message } from './dto/events.message';
             }
           }
         }
-        const bingoBoard:BingoBoard = this.gameData.get(this.getId(room.player2));
+        let bingoBoard:BingoBoard = this.gameData.get(this.getId(room.player1));
+        bingoBoard.turn = false;
+        
+        const player1Data = { room, bingoBoard };
+
+        this.server.to(this.getId(room.player1)).emit('created', player1Data)
+
+        bingoBoard = this.gameData.get(this.getId(room.player2));
 
         selectedNumber.forEach((n)=>{
           for(let i=0;i<5;i++){
@@ -196,10 +203,13 @@ import { Message } from './dto/events.message';
         });
 
         bingoBoard.turn = true;
-        const res = { room, bingoBoard };
         console.log(bingoBoard.cell);
         console.log(bingoBoard.turn);
-        this.server.to(this.getId(room.player2)).emit('created', { room, bingoBoard });
+
+        const player2Data = { room, bingoBoard };
+
+        this.server.to(this.getId(room.player2)).emit('created', player2Data);
+        
       }
       
 
@@ -216,7 +226,14 @@ import { Message } from './dto/events.message';
             }
           }
         }
-        const bingoBoard:BingoBoard = this.gameData.get(this.getId(room.player1));
+        let bingoBoard:BingoBoard = this.gameData.get(this.getId(room.player2));
+        bingoBoard.turn = false;
+        
+        const player2Data = { room, bingoBoard };
+
+        this.server.to(this.getId(room.player2)).emit('created', player2Data)
+
+        bingoBoard = this.gameData.get(this.getId(room.player1));
         
         selectedNumber.forEach((n)=>{
           for(let i=0;i<5;i++){
@@ -229,10 +246,12 @@ import { Message } from './dto/events.message';
         });
 
         bingoBoard.turn = true;
-        const res = { room, bingoBoard };
         console.log(bingoBoard.cell);
         console.log(bingoBoard.turn);
-        this.server.to(this.getId(room.player1)).emit('created', res);
+
+        const player1Data = { room, bingoBoard };
+        
+        this.server.to(this.getId(room.player1)).emit('created', player1Data);
       }
     
     }

@@ -40,7 +40,7 @@ const ChatBox = ({
   setIsWatingRoomChat,
 }) => {
   const scrollRef = useRef();
-  const chatRef = useRef();
+  const chatRef1 = useRef();
 
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -49,7 +49,7 @@ const ChatBox = ({
   const onKeyPress = (e) => {
     if (e.key === "Enter") {
       newMessage(isChatting);
-      chatRef.current.value = null;
+      chatRef1.current.value = null;
     }
   };
 
@@ -62,7 +62,7 @@ const ChatBox = ({
       </div>
       <div>
         <input
-          ref={chatRef}
+          ref={chatRef1}
           onKeyPress={onKeyPress}
           onChange={(e) => {
             setIsChatting(e.target.value);
@@ -72,7 +72,7 @@ const ChatBox = ({
         <button
           onClick={() => {
             newMessage(isChatting);
-            chatRef.current.value = null;
+            chatRef1.current.value = null;
           }}
         >
           보내기

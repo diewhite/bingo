@@ -22,6 +22,7 @@ const BingoNumberBox = ({
   setCheckedBingo,
   data,
   isJoinedInfo,
+  isClickedBingo,
 }) => {
   const [isColor, setIsColor] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
@@ -42,8 +43,23 @@ const BingoNumberBox = ({
     }
   }, [isClicked]);
 
+  const boxClickHandler = () => {
+    if (isClicked === false) {
+      setIsClicked(true);
+      isClickedBingo({
+        result: isJoinedInfo?.bingoBoard?.result,
+        turn: isJoinedInfo?.bingoBoard?.turn,
+        cell: checkedBingo,
+      });
+    }
+  };
   return (
-    <Wrap onClick={() => setIsClicked(true)} backColor={isColor}>
+    <Wrap
+      onClick={() => {
+        boxClickHandler();
+      }}
+      backColor={isColor}
+    >
       {children}
     </Wrap>
   );

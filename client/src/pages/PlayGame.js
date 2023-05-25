@@ -127,11 +127,11 @@ const PlayGame = ({ setIsName, isName }) => {
     });
   }, [newMessage]);
 
-  useEffect(() => {
-    socket.current.on("check", (data) => {
-      console.log(data, "?data");
-    });
-  }, []);
+  // useEffect(() => {
+  //   socket.current.on("check", (data) => {
+  //     console.log(data, "?data");
+  //   });
+  // }, []);
 
   const navigate = useNavigate();
   useEffect(() => {

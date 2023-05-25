@@ -36,11 +36,32 @@ const BingoBox = ({
   isPlayGame,
 }) => {
   const [isBingoNumber, setIsBingoNumber] = useState([]);
+  useEffect(() => {}, []);
   useEffect(() => {
     if (isJoinedInfo?.bingoBoard?.result === "WIN") {
-      alert("이겼음");
+      if (window.confirm("이겼습니다. 다시 게임하겠습니까?")) {
+        isClickedBingo({
+          result: isJoinedInfo?.bingoBoard?.result,
+          // result: "EMPTY",
+          turn: isJoinedInfo?.bingoBoard?.turn,
+          cell: isBingoNumber,
+          restart: true,
+        });
+      } else {
+        leaveRoom();
+      }
     } else if (isJoinedInfo?.bingoBoard?.result === "LOSE") {
-      alert("졌음");
+      if (window.confirm("아쉽네요 졌습니다. 다시 게임하겠습니까?")) {
+        isClickedBingo({
+          result: isJoinedInfo?.bingoBoard?.result,
+          // result: "EMPTY",
+          turn: isJoinedInfo?.bingoBoard?.turn,
+          cell: isBingoNumber,
+          restart: true,
+        });
+      } else {
+        leaveRoom();
+      }
     }
   }, [isJoinedInfo]);
 

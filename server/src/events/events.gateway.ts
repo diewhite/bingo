@@ -149,14 +149,15 @@ import { Message } from './dto/events.message';
     @SubscribeMessage('check')
     check(@MessageBody() data: BingoBoard, @ConnectedSocket() client: Socket) {
       let roomName;
-
+      console.log("입력data");
+      console.log(data.cell);
       const userData:BingoBoard = this.eventsService.checklogic(data);
       
       for (const key of client.rooms.keys()) {
       roomName = key;
       }
       const room: Room = this.rooms.get(roomName);
-      
+
       //player1 승리
       if(userData.result == "WIN" && room.player1 == this.users.get(client.id)){
         this.server.to(this.getId(room.player1)).emit('result', 'WIN');
@@ -171,6 +172,7 @@ import { Message } from './dto/events.message';
 
       //player1 턴오버, player2 isSelected 동기화
       if(room.player1 == this.users.get(client.id)){
+        console.log("player1 턴오버 확인");
         let selectedNumber:number[] = [];
         this.gameData.set(client.id, userData);
         
@@ -181,26 +183,29 @@ import { Message } from './dto/events.message';
             }
           }
         }
-        const player2Data:BingoBoard = this.gameData.get(this.getId(room.player2));
+        const bingoBoard:BingoBoard = this.gameData.get(this.getId(room.player2));
 
         selectedNumber.forEach((n)=>{
           for(let i=0;i<5;i++){
             for(let j=0;j<5;j++){
-              if(player2Data.cell[i][j]?.number == n){
-                player2Data.cell[i][j].isSelected = true;
+              if(bingoBoard.cell[i][j]?.number == n){
+                bingoBoard.cell[i][j].isSelected = true;
               }
             }
           }
         });
 
-        player2Data.turn = true;
-
-        this.server.to(this.getId(room.player2)).emit('created', player2Data);
+        bingoBoard.turn = true;
+        const res = { room, bingoBoard };
+        console.log(bingoBoard.cell);
+        console.log(bingoBoard.turn);
+        this.server.to(this.getId(room.player2)).emit('created', { room, bingoBoard });
       }
       
 
       //player2 턴오버, player1 isSelected 동기화
       if(room.player2 == this.users.get(client.id)){
+        console.log("player2 턴오버 확인");
         let selectedNumber:number[] = [];
         this.gameData.set(client.id, userData);
         
@@ -211,21 +216,23 @@ import { Message } from './dto/events.message';
             }
           }
         }
-        const player1Data:BingoBoard = this.gameData.get(this.getId(room.player1));
+        const bingoBoard:BingoBoard = this.gameData.get(this.getId(room.player1));
         
         selectedNumber.forEach((n)=>{
           for(let i=0;i<5;i++){
             for(let j=0;j<5;j++){
-              if(player1Data.cell[i][j]?.number == n){
-                player1Data.cell[i][j].isSelected = true;
+              if(bingoBoard.cell[i][j]?.number == n){
+                bingoBoard.cell[i][j].isSelected = true;
               }
             }
           }
         });
 
-        player1Data.turn = true;
-
-        this.server.to(this.getId(room.player1)).emit('created', player1Data);
+        bingoBoard.turn = true;
+        const res = { room, bingoBoard };
+        console.log(bingoBoard.cell);
+        console.log(bingoBoard.turn);
+        this.server.to(this.getId(room.player1)).emit('created', res);
       }
     
     }

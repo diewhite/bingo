@@ -313,6 +313,7 @@ import { Message } from './dto/events.message';
     restart(room:Room) {
         //player1 리셋
         let bingoBoard:BingoBoard = this.eventsService.createBoard();
+        bingoBoard.turn = true;
         this.gameData.set(this.getId(room.player1), bingoBoard);
         const player1Data = { room, bingoBoard };
         this.server.to(this.getId(room.player1)).emit('created', player1Data);

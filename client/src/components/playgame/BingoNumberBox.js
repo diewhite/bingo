@@ -36,7 +36,7 @@ const BingoNumberBox = ({
   useEffect(() => {
     let memo = isBingoNumber;
     if (!!isClicked) {
-      memo[Row][Column] = { isSelected: true, number: data.number };
+      memo[Row][Column] = { number: data.number, isSelected: true };
       setCheckedBingo(memo);
     }
   }, [isClicked]);
@@ -58,6 +58,7 @@ const BingoNumberBox = ({
       });
     }
   };
+  console.log(checkedBingo, "checkBingo");
   return (
     <Wrap
       onClick={() => {

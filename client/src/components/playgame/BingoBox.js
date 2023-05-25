@@ -41,6 +41,7 @@ const BingoBox = ({
   useEffect(() => {
     if (!!isJoinedInfo) {
       setIsBingoNumber(isJoinedInfo?.bingoBoard?.cell);
+      setCheckedBingo(isJoinedInfo?.bingoBoard?.cell);
     }
   }, [isJoinedInfo, isBingoNumber, checkedBingo, isClickedBingo]);
 

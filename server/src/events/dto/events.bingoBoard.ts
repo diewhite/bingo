@@ -2,6 +2,7 @@ export class BingoBoard{
     cell: Cell[][];
     result: RESULT;
     turn: boolean;
+    restart : boolean;
 
     constructor() {
         this.cell = [];
@@ -16,5 +17,5 @@ export interface Cell{
 }
 
 export enum RESULT {
-    WIN = "WIN", EMPTY = "EMPTY"
+    WIN = "WIN", EMPTY = "EMPTY", LOSE = "LOSE"
 }

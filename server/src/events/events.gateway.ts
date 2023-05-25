@@ -160,11 +160,11 @@ import { Message } from './dto/events.message';
       }
       const room: Room = this.rooms.get(roomName);
 
-      //승패 확인
-      this.resultCheck(userData, room, client.id);
-
       //턴 오버 및 데이터 동기화
       this.turnOver(userData, room, client.id);
+
+      //승패 확인
+      this.resultCheck(userData, room, client.id);
 
       //게임 재경기
       if(this.gameData.get(this.getId(room.player1)).restart && this.gameData.get(this.getId(room.player2)).restart){
@@ -199,27 +199,54 @@ import { Message } from './dto/events.message';
 
     //결과 확인
     resultCheck(userData:BingoBoard, room:Room, clientId:string) {
-      let bingoBoard:BingoBoard = userData;
-      //player1 승리
-      if(bingoBoard.result == "WIN" && room.player1 == this.users.get(clientId)){
-        const player1Data = { room, bingoBoard };
-        this.server.to(this.getId(room.player1)).emit('created', player1Data);
-        
-        bingoBoard = this.gameData.get(this.getId(room.player2))
-        bingoBoard.result = RESULT.LOSE;
-        const player2Data = { room, bingoBoard };
-        this.server.to(this.getId(room.player2)).emit('created', player2Data);
-      }
+      //본인 차례일때 승리 확인 조건
+      if(userData.result == "WIN"){
+        let bingoBoard:BingoBoard = userData;
 
-      //player2 승리
-      if(bingoBoard.result == "WIN" && room.player2 == this.users.get(clientId)){
-        const player2Data = { room, bingoBoard };
-        this.server.to(this.getId(room.player2)).emit('created', player2Data);
-        
-        bingoBoard = this.gameData.get(this.getId(room.player1))
-        bingoBoard.result = RESULT.LOSE;
-        const player1Data = { room, bingoBoard };
-        this.server.to(this.getId(room.player1)).emit('created', player1Data);
+        //player1 승리
+        if(bingoBoard.result == "WIN" && room.player1 == this.users.get(clientId)){
+          const player1Data = { room, bingoBoard };
+          this.server.to(this.getId(room.player1)).emit('created', player1Data);
+          
+          bingoBoard = this.gameData.get(this.getId(room.player2))
+          bingoBoard.result = RESULT.LOSE;
+          const player2Data = { room, bingoBoard };
+          this.server.to(this.getId(room.player2)).emit('created', player2Data);
+        }
+
+        //player2 승리
+        if(bingoBoard.result == "WIN" && room.player2 == this.users.get(clientId)){
+          const player2Data = { room, bingoBoard };
+          this.server.to(this.getId(room.player2)).emit('created', player2Data);
+          
+          bingoBoard = this.gameData.get(this.getId(room.player1))
+          bingoBoard.result = RESULT.LOSE;
+          const player1Data = { room, bingoBoard };
+          this.server.to(this.getId(room.player1)).emit('created', player1Data);
+        }
+      } else {
+        //상대방 차례일때 승리 확인 조건
+        if(this.eventsService.checklogic(this.gameData.get(this.getId(room.player1))).result=="WIN"){
+          let bingoBoard:BingoBoard = this.gameData.get(this.getId(room.player1));
+          const player1Data = { room, bingoBoard };
+          this.server.to(this.getId(room.player1)).emit('created', player1Data);
+
+          bingoBoard = this.gameData.get(this.getId(room.player2));
+          bingoBoard.result = RESULT.LOSE;
+          const player2Data = { room, bingoBoard };
+          this.server.to(this.getId(room.player2)).emit('created', player2Data);
+
+        } else if(this.eventsService.checklogic(this.gameData.get(this.getId(room.player2))).result=="WIN"){
+
+          let bingoBoard:BingoBoard = this.gameData.get(this.getId(room.player2));
+          const player2Data = { room, bingoBoard };
+          this.server.to(this.getId(room.player2)).emit('created', player2Data);
+
+          bingoBoard = this.gameData.get(this.getId(room.player1));
+          bingoBoard.result = RESULT.LOSE;
+          const player1Data = { room, bingoBoard };
+          this.server.to(this.getId(room.player1)).emit('created', player1Data);
+        }
       }
     }
 
@@ -256,7 +283,7 @@ import { Message } from './dto/events.message';
             }
           }
         });
-
+        this.gameData.set(this.getId(room.player2), bingoBoard);
         bingoBoard.turn = true;
         console.log(bingoBoard.cell);
         console.log(bingoBoard.turn);
@@ -299,6 +326,7 @@ import { Message } from './dto/events.message';
           }
         });
 
+        this.gameData.set(this.getId(room.player1), bingoBoard);
         bingoBoard.turn = true;
         console.log(bingoBoard.cell);
         console.log(bingoBoard.turn);

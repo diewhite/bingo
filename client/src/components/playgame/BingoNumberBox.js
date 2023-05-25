@@ -39,6 +39,7 @@ const BingoNumberBox = ({
       });
     }
     setIsBingoNumber(isJoinedInfo?.bingoBoard?.cell);
+    console.log("클릭");
   };
   useEffect(() => {
     if (isBingoNumber[Row][Column]?.isSelected) {

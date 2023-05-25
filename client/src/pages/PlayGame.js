@@ -98,7 +98,6 @@ const PlayGame = ({ setIsName, isName }) => {
   const leaveRoom = () => {
     setIsPlayGame(false);
     socket.current.emit("leave");
-    console.log(isPlayGame, "ㅁㅈㄷㄹㅁㅈㄷㄹ");
   };
 
   const isClickedBingo = (data) => {

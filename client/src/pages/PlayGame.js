@@ -100,6 +100,7 @@ const PlayGame = ({ setIsName, isName }) => {
   };
 
   const isClickedBingo = (data) => {
+    console.log("check!!!!!");
     socket.current.emit("check", data);
   };
 
@@ -109,7 +110,6 @@ const PlayGame = ({ setIsName, isName }) => {
     });
   }, []);
 
-  // console.log(isJoinedInfo, "isJoinedInfo");
   useEffect(() => {
     socket.current.on("roomList", (data) => {
       setIsRoomList(data);
@@ -126,12 +126,6 @@ const PlayGame = ({ setIsName, isName }) => {
       }
     });
   }, [newMessage]);
-
-  // useEffect(() => {
-  //   socket.current.on("check", (data) => {
-  //     console.log(data, "?data");
-  //   });
-  // }, []);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -193,6 +187,7 @@ const PlayGame = ({ setIsName, isName }) => {
             isJoinedInfo={isJoinedInfo}
             leaveRoom={leaveRoom}
             isClickedBingo={isClickedBingo}
+            isPlayGame={isPlayGame}
           ></BingoBox>
         </>
       )}

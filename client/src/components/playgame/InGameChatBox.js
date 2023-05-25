@@ -82,6 +82,7 @@ const InGameChatBox = ({ newMessage, isGameChat, isJoinedInfo, leaveRoom }) => {
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [isGameChat]);
+
   return (
     <Wrap>
       <UserList>

@@ -33,25 +33,16 @@ const BingoBox = ({
   isJoinedInfo,
   leaveRoom,
   isClickedBingo,
+  isPlayGame,
 }) => {
   const [isBingoNumber, setIsBingoNumber] = useState([]);
   const [checkedBingo, setCheckedBingo] = useState([]);
-  console.log(isJoinedInfo, "isJoinedInfo");
-  console.log(isBingoNumber, "isBingoNumber");
+
   useEffect(() => {
     if (!!isJoinedInfo) {
       setIsBingoNumber(isJoinedInfo?.bingoBoard?.cell);
     }
   }, [isJoinedInfo, isBingoNumber, checkedBingo, isClickedBingo]);
-  console.log(isJoinedInfo, "isJoinedInfo");
-  // console.log(isBingoNumber, "isBingoNumber");
-  // useEffect(() => {
-  //   isClickedBingo({
-  //     result: isJoinedInfo?.bingoBoard?.result,
-  //     turn: isJoinedInfo?.bingoBoard?.turn,
-  //     cell: checkedBingo,
-  //   });
-  // }, [checkedBingo, isBingoNumber, isJoinedInfo]);
 
   return (
     <Wrap>
@@ -63,16 +54,17 @@ const BingoBox = ({
               return el1.map((el2, index2) => {
                 return (
                   <BingoNumberBox
+                    key={`${index1}` - `${index2}`}
                     isClickedBingo={isClickedBingo}
                     setIsBingoNumber={setIsBingoNumber}
                     isBingoNumber={isBingoNumber}
                     checkedBingo={checkedBingo}
                     setCheckedBingo={setCheckedBingo}
-                    key={el2}
                     Row={index1}
                     Column={index2}
                     data={el2}
                     isJoinedInfo={isJoinedInfo}
+                    isPlayGame={isPlayGame}
                   >
                     {el2.number}
                   </BingoNumberBox>

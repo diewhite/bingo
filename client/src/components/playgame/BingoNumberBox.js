@@ -23,29 +23,34 @@ const BingoNumberBox = ({
   data,
   isJoinedInfo,
   isClickedBingo,
+  isPlayGame,
 }) => {
   const [isColor, setIsColor] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
+  useEffect(() => {
+    if (isPlayGame === false) {
+      setIsColor(true);
+    }
+  }, [isPlayGame]);
 
   useEffect(() => {
     let memo = isBingoNumber;
     if (!!isClicked) {
       memo[Row][Column] = { isSelected: true, number: data.number };
       setCheckedBingo(memo);
-      console.log(isBingoNumber, "isBingoNumber");
-      console.log(isJoinedInfo, "isJoinedInfo");
     }
   }, [isClicked]);
 
-  useEffect(() => {
-    if (!!isBingoNumber[Row][Column]?.isSelected) {
-      setIsColor(false);
-    }
-  }, [isClicked]);
+  // useEffect(() => {
+  //   if (!!isBingoNumber[Row][Column]?.isSelected) {
+  //     setIsColor(false);
+  //   }
+  // }, [isClicked, isPlayGame]);
 
   const boxClickHandler = () => {
-    if (isClicked === false) {
+    if (isClicked === false && !!isJoinedInfo?.bingoBoard?.turn) {
       setIsClicked(true);
+      setIsColor(false);
       isClickedBingo({
         result: isJoinedInfo?.bingoBoard?.result,
         turn: isJoinedInfo?.bingoBoard?.turn,

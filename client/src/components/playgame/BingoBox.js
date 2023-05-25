@@ -48,11 +48,11 @@ const BingoBox = ({
       setIsConfirm(false);
     }
   }, [isJoinedInfo]);
-  console.log(
-    isJoinedInfo?.bingoBoard?.result,
-    " isJoinedInfo?.bingoBoard?.result"
-  );
-  console.log(isJoinedInfo, "isJoinedInfo");
+  // console.log(
+  //   isJoinedInfo?.bingoBoard?.result,
+  //   " isJoinedInfo?.bingoBoard?.result"
+  // );
+  // console.log(isJoinedInfo, "isJoinedInfo");
   useEffect(() => {
     if (!!isJoinedInfo) {
       setIsBingoNumber(isJoinedInfo?.bingoBoard?.cell);

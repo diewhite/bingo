@@ -62,8 +62,8 @@ const ReplayModal = ({
         <button
           onClick={() => {
             isClickedBingo({
-              result: isJoinedInfo?.bingoBoard?.result,
-              // result: "EMPTY",
+              //   result: isJoinedInfo?.bingoBoard?.result,
+              result: "EMPTY",
               turn: isJoinedInfo?.bingoBoard?.turn,
               cell: isBingoNumber,
               restart: true,

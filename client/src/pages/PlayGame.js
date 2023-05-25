@@ -118,14 +118,17 @@ const PlayGame = ({ setIsName, isName }) => {
 
   useEffect(() => {
     socket.current.on("onMessage", function (data) {
-      setIsWatingRoomChat([...isWatingRoomChat, `${data.name}:${data.text}`]);
       if (!!isPlayGame) {
         setIsGameChat([...isGameChat, `${data.name}:${data.text}`]);
+        setIsWatingRoomChat([]);
       } else if (!isPlayGame) {
+        setIsWatingRoomChat([...isWatingRoomChat, `${data.name}:${data.text}`]);
         setIsGameChat([]);
       }
     });
   }, [newMessage]);
+  // console.log(isWatingRoomChat, "isWatingRoomChat");
+  // console.log(isPlayGame);
 
   const navigate = useNavigate();
   useEffect(() => {

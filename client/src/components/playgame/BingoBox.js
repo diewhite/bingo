@@ -36,15 +36,13 @@ const BingoBox = ({
   isPlayGame,
 }) => {
   const [isBingoNumber, setIsBingoNumber] = useState([]);
-  const [checkedBingo, setCheckedBingo] = useState([]);
 
   useEffect(() => {
     if (!!isJoinedInfo) {
       setIsBingoNumber(isJoinedInfo?.bingoBoard?.cell);
-      setCheckedBingo(isJoinedInfo?.bingoBoard?.cell);
     }
-  }, [isJoinedInfo, isBingoNumber, checkedBingo, isClickedBingo]);
-
+  }, [isJoinedInfo, isBingoNumber, isClickedBingo]);
+  console.log(isJoinedInfo, "isJoinedInfo");
   return (
     <Wrap>
       <Title>방제목 : {isJoinedInfo?.room?.title}</Title>
@@ -59,8 +57,6 @@ const BingoBox = ({
                     isClickedBingo={isClickedBingo}
                     setIsBingoNumber={setIsBingoNumber}
                     isBingoNumber={isBingoNumber}
-                    checkedBingo={checkedBingo}
-                    setCheckedBingo={setCheckedBingo}
                     Row={index1}
                     Column={index2}
                     data={el2}

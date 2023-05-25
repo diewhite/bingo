@@ -95,8 +95,9 @@ const PlayGame = ({ setIsName, isName }) => {
   };
 
   const leaveRoom = () => {
-    socket.current.emit("leave");
     setIsPlayGame(false);
+    socket.current.emit("leave");
+    console.log(isPlayGame, "ㅁㅈㄷㄹㅁㅈㄷㄹ");
   };
 
   const isClickedBingo = (data) => {
@@ -143,7 +144,12 @@ const PlayGame = ({ setIsName, isName }) => {
             {isRoomList.length > 0 ? (
               isRoomList.map((el, index) => {
                 return (
-                  <RoomBox key={el} el={el} index={index} joinRoom={joinRoom} />
+                  <RoomBox
+                    key={el + index}
+                    el={el}
+                    index={index}
+                    joinRoom={joinRoom}
+                  />
                 );
               })
             ) : (

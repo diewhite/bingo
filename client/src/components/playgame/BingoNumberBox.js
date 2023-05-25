@@ -35,6 +35,7 @@ const BingoNumberBox = ({
         result: isJoinedInfo?.bingoBoard?.result,
         turn: isJoinedInfo?.bingoBoard?.turn,
         cell: isBingoNumber,
+        restart: false,
       });
     }
     setIsBingoNumber(isJoinedInfo?.bingoBoard?.cell);

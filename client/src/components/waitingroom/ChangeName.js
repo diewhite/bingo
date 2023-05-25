@@ -52,7 +52,13 @@ const Cancel = styled.span`
   font-size: 25px;
 `;
 
-const ChangeName = ({ isOpen }) => {
+const ChangeName = ({ isOpen, setIsName, isName }) => {
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      setIsName(isName);
+      isOpen(false);
+    }
+  };
   return (
     <Container>
       <Box>
@@ -60,8 +66,12 @@ const ChangeName = ({ isOpen }) => {
           <span>닉네임 변경</span>
         </div>
         <div>
-          <input placeholder="닉네임을 입력하세요."></input>
-          <button>확인</button>
+          <input
+            placeholder="닉네임을 입력하세요."
+            onKeyPress={onKeyPress}
+            onChange={(e) => setIsName(e.target.value)}
+          ></input>
+          <button onClick={() => isOpen(false)}>확인</button>
         </div>
         <Cancel onClick={() => isOpen(false)}>X</Cancel>
       </Box>

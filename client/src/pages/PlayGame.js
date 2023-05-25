@@ -20,14 +20,17 @@ const Container = styled.div`
 `;
 
 const RoomBoxWrap = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  /* flex-wrap: wrap; */
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 100px 1fr;
+  gap: 5px;
   width: calc(100% - 40px);
   height: 200px;
   overflow-y: scroll;
   padding: 20px;
   height: 100%;
+  /* justify-content: flex-start; */
   /* height: 250px; */
 `;
 const ButtonWrap = styled.div`
@@ -46,8 +49,6 @@ const Button = styled.button`
   font-weight: 700;
   font-size: 30px;
 `;
-
-const RefreshBtn = styled.button``;
 
 const PlayGame = ({ setIsName, isName }) => {
   let socket = useRef(null);
@@ -139,7 +140,6 @@ const PlayGame = ({ setIsName, isName }) => {
       {!isPlayGame ? (
         <>
           <UserInfo isName={isName}></UserInfo>
-          <RefreshBtn></RefreshBtn>
           <RoomBoxWrap>
             {isRoomList.length > 0 ? (
               isRoomList.map((el, index) => {
@@ -165,9 +165,9 @@ const PlayGame = ({ setIsName, isName }) => {
           ></ChatBox>
           <ButtonWrap>
             <Button onClick={() => setIsCreate(!isCreate)}>방 만들기</Button>
-            <Button onClick={() => setIsChangeName(!isChangeName)}>
+            {/* <Button onClick={() => setIsChangeName(!isChangeName)}>
               닉네임 변경
-            </Button>
+            </Button> */}
           </ButtonWrap>
           {isCreate ? (
             <CreateRoom
@@ -179,7 +179,11 @@ const PlayGame = ({ setIsName, isName }) => {
             <></>
           )}
           {isChangeName ? (
-            <ChangeName isOpen={setIsChangeName}></ChangeName>
+            <ChangeName
+              isName={isName}
+              setIsName={setIsName}
+              isOpen={setIsChangeName}
+            ></ChangeName>
           ) : (
             <></>
           )}

@@ -100,7 +100,7 @@ const PlayGame = ({ setIsName, isName }) => {
   };
 
   const isClickedBingo = (data) => {
-    console.log("check!!!!!");
+    console.log(data, "check!!!!!");
     socket.current.emit("check", data);
   };
 

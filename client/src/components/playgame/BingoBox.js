@@ -67,7 +67,7 @@ const BingoBox = ({
       setIsBingoNumber(isJoinedInfo?.bingoBoard?.cell);
     }
   }, [isJoinedInfo, isBingoNumber, isClickedBingo]);
-  console.log(isJoinedInfo, "??");
+  // console.log(isJoinedInfo, "??");
   return (
     <>
       <Wrap>

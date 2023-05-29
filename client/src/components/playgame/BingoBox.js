@@ -11,9 +11,11 @@ const Wrap = styled.div`
 `;
 const BingoBoard = styled.div`
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
-  width: 650px;
+  margin-left: 20px;
+  width: 550px;
+  height: 500px;
   /* height: 800px; */
   gap: 5px;
   flex-wrap: wrap;
@@ -27,6 +29,13 @@ const Title = styled.div`
 const InnerWrap = styled.div`
   margin: 0 auto;
   display: flex;
+`;
+const TurnText = styled.div`
+  margin-left: 20px;
+  margin-bottom: 20px;
+  font-size: 30px;
+  color: #fff;
+  font-weight: 700;
 `;
 const BingoBox = ({
   newMessage,
@@ -58,10 +67,16 @@ const BingoBox = ({
       setIsBingoNumber(isJoinedInfo?.bingoBoard?.cell);
     }
   }, [isJoinedInfo, isBingoNumber, isClickedBingo]);
+  // console.log(isJoinedInfo, "??");
   return (
     <>
       <Wrap>
         <Title>방제목 : {isJoinedInfo?.room?.title}</Title>
+        {isJoinedInfo?.bingoBoard?.turn ? (
+          <TurnText>칸을 선택해주세요.</TurnText>
+        ) : (
+          <TurnText>상대편이 칸을 선택하고 있습니다.</TurnText>
+        )}
         <InnerWrap>
           <BingoBoard>
             {!!isBingoNumber &&

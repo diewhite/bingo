@@ -10,26 +10,41 @@ import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* gap: 15px; */
+  height: calc(100vh);
+  background-color: #3e7aeb;
+  /* padding: 50px; */
+  min-width: 800px;
+`;
+const InnerContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
   height: calc(100vh - 100px);
+  max-height: 950px;
   background-color: #3e7aeb;
   padding: 50px;
   min-width: 800px;
 `;
+const RoomContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 500px;
+`;
 
 const RoomBoxWrap = styled.div`
-  display: grid;
-  /* flex-wrap: wrap; */
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 100px 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 5px;
   width: calc(100% - 40px);
-  height: 200px;
+  height: 460px;
+  /* height: 200px; */
   overflow-y: scroll;
   padding: 20px;
-  height: 100%;
+  /* min-height: 400px; */
+  /* height: 100%; */
   /* justify-content: flex-start; */
   /* height: 250px; */
 `;
@@ -139,69 +154,73 @@ const PlayGame = ({ setIsName, isName }) => {
 
   return (
     <Container>
-      {!isPlayGame ? (
-        <>
-          <UserInfo isName={isName}></UserInfo>
-          <RoomBoxWrap>
-            {isRoomList.length > 0 ? (
-              isRoomList.map((el, index) => {
-                return (
-                  <RoomBox
-                    key={el + index}
-                    el={el}
-                    index={index}
-                    joinRoom={joinRoom}
-                  />
-                );
-              })
-            ) : (
-              <span>방이 없습니다.</span>
-            )}
-          </RoomBoxWrap>
-          <ChatBox
-            isChatting={isChatting}
-            setIsChatting={setIsChatting}
-            newMessage={newMessage}
-            isWatingRoomChat={isWatingRoomChat}
-            setIsWatingRoomChat={setIsWatingRoomChat}
-          ></ChatBox>
-          <ButtonWrap>
-            <Button onClick={() => setIsCreate(!isCreate)}>방 만들기</Button>
-            {/* <Button onClick={() => setIsChangeName(!isChangeName)}>
+      <InnerContainer>
+        {!isPlayGame ? (
+          <>
+            <UserInfo isName={isName}></UserInfo>
+            <RoomContainer>
+              <RoomBoxWrap>
+                {isRoomList.length > 0 ? (
+                  isRoomList.map((el, index) => {
+                    return (
+                      <RoomBox
+                        key={el + index}
+                        el={el}
+                        index={index}
+                        joinRoom={joinRoom}
+                      />
+                    );
+                  })
+                ) : (
+                  <span>방이 없습니다.</span>
+                )}
+              </RoomBoxWrap>
+            </RoomContainer>
+            <ChatBox
+              isChatting={isChatting}
+              setIsChatting={setIsChatting}
+              newMessage={newMessage}
+              isWatingRoomChat={isWatingRoomChat}
+              setIsWatingRoomChat={setIsWatingRoomChat}
+            ></ChatBox>
+            <ButtonWrap>
+              <Button onClick={() => setIsCreate(!isCreate)}>방 만들기</Button>
+              {/* <Button onClick={() => setIsChangeName(!isChangeName)}>
               닉네임 변경
             </Button> */}
-          </ButtonWrap>
-          {isCreate ? (
-            <CreateRoom
-              createRoom={createGameRoom}
-              isOpen={setIsCreate}
-              setIsPlayGame={setIsPlayGame}
-            ></CreateRoom>
-          ) : (
-            <></>
-          )}
-          {isChangeName ? (
-            <ChangeName
-              isName={isName}
-              setIsName={setIsName}
-              isOpen={setIsChangeName}
-            ></ChangeName>
-          ) : (
-            <></>
-          )}
-        </>
-      ) : (
-        <>
-          <BingoBox
-            newMessage={newMessage}
-            isGameChat={isGameChat}
-            isJoinedInfo={isJoinedInfo}
-            leaveRoom={leaveRoom}
-            isClickedBingo={isClickedBingo}
-            isPlayGame={isPlayGame}
-          ></BingoBox>
-        </>
-      )}
+            </ButtonWrap>
+            {isCreate ? (
+              <CreateRoom
+                createRoom={createGameRoom}
+                isOpen={setIsCreate}
+                setIsPlayGame={setIsPlayGame}
+              ></CreateRoom>
+            ) : (
+              <></>
+            )}
+            {isChangeName ? (
+              <ChangeName
+                isName={isName}
+                setIsName={setIsName}
+                isOpen={setIsChangeName}
+              ></ChangeName>
+            ) : (
+              <></>
+            )}
+          </>
+        ) : (
+          <>
+            <BingoBox
+              newMessage={newMessage}
+              isGameChat={isGameChat}
+              isJoinedInfo={isJoinedInfo}
+              leaveRoom={leaveRoom}
+              isClickedBingo={isClickedBingo}
+              isPlayGame={isPlayGame}
+            ></BingoBox>
+          </>
+        )}
+      </InnerContainer>
     </Container>
   );
 };

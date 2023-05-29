@@ -8,7 +8,7 @@ const Wrap = styled.div`
   /* height: 800px; */
 `;
 const TopBox = styled.div`
-  height: 330px;
+  height: 200px;
   overflow-y: scroll;
   border-radius: 10px;
   background-color: #3e7aeb;

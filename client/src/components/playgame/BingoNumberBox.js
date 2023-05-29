@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 
 const Wrap = styled.span`
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;

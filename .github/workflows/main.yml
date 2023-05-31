@@ -23,14 +23,14 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        file: ./client/
+        file: ./client/Dockerfile
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/bingo-client:1.0
         
     - name: Build and push (server)
       uses: docker/build-push-action@v2
       with:
         push: true
-        file: ./server/
+        file: ./server/Dockerfile
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/bingo-server:1.0
         
     - name: ssh-pipeline

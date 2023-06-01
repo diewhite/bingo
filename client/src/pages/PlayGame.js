@@ -79,7 +79,7 @@ const PlayGame = ({ setIsName, isName }) => {
 
   useEffect(() => {
     if (!socket.current) {
-      socket.current = io("http://localhost:4005/");
+      socket.current = io("ws://101.101.219.25:4005/");
       socket.current.on("connect", function () {
         console.log("Connected");
         socket.current.emit("information", isName);
